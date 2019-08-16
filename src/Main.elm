@@ -14,7 +14,7 @@ import Html.Attributes as HA
 import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, div, h1, h3, img, source, text, video)
-import Html.Styled.Attributes as A exposing (class, href, src, type_)
+import Html.Styled.Attributes as A exposing (class, height, href, src, type_, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
 import Http
@@ -291,11 +291,19 @@ viewVideos model =
                     H.video
                         [ A.id video.id
                         , class "azuremediaplayer amp-default-skin"
+                        , width 345
+                        , height 184
                         ]
                         []
 
                   else
-                    img [ src video.imageUrl, onClick (PlayVideo video) ] []
+                    img
+                        [ src video.imageUrl
+                        , onClick (PlayVideo video)
+                        , width 345
+                        , height 184
+                        ]
+                        []
                 , div [] (viewSynopsis video.synopsis)
                 ]
     in

@@ -56,8 +56,8 @@ function playVideo(video) {
       nativeControlsForTouch: false,
       autoplay: true,
       controls: true,
-      width: '640',
-      height: '400',
+      width: '345',
+      height: '184',
       poster: video.imageUrl,
     },
     function() {

@@ -3,6 +3,7 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
+import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
@@ -26,6 +27,28 @@ import UpdateExtra exposing (andThen, command, pure)
 import Url exposing (Url)
 
 
+videoDecoder : Decoder Video
+videoDecoder =
+    let
+        ds name =
+            JDP.required name JD.string
+    in
+    JD.succeed Video
+        |> ds "videoId"
+        |> ds "title"
+        |> ds "synopsis"
+        |> ds "videoURL"
+        |> ds "imageURL"
+
+
+videoListDecoder : Decoder (List Video)
+videoListDecoder =
+    JD.at [ "MYTV", "CategoryVideoDetails" ]
+        (JD.dict videoDecoder
+            |> JD.map Dict.values
+        )
+
+
 
 -- MODEL
 
@@ -35,6 +58,7 @@ type alias Model =
     , key : Nav.Key
     , route : Route
     , dataStr : String
+    , videos : List Video
     }
 
 
@@ -74,6 +98,16 @@ flagsDecoder =
         |> JDP.required "cache" cacheDecoder
 
 
+setDataStr : Value -> Model -> Model
+setDataStr encoded model =
+    { model | dataStr = JE.encode 2 encoded }
+
+
+setVideos : List Video -> Model -> Model
+setVideos videos model =
+    { model | videos = videos }
+
+
 
 -- INIT
 
@@ -94,6 +128,7 @@ init encodedFlags url key =
             , key = key
             , route = route
             , dataStr = ""
+            , videos = []
             }
     in
     model
@@ -169,8 +204,34 @@ httpError e model =
     pure model
 
 
-gotData d model =
-    pure { model | dataStr = JE.encode 2 d }
+type alias Video =
+    { id : String
+    , title : String
+    , synopsis : String
+    , videoUrl : String
+    , imageUrl : String
+    }
+
+
+gotData : Value -> Model -> Return
+gotData encodedData model =
+    setDataStr encodedData model
+        |> decodeAndSetVideos encodedData
+
+
+decodeAndSetVideos : Value -> Model -> Return
+decodeAndSetVideos encoded model =
+    model
+        |> decodeHelp videoListDecoder
+            (\videos -> setVideos videos >> pure)
+            encoded
+
+
+decodeHelp : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return
+decodeHelp decoder onSuccess encoded model =
+    JD.decodeValue decoder encoded
+        |> Result.Extra.unpack onDecodeError onSuccess
+        |> callWith model
 
 
 cacheEffect : Model -> Cmd msg

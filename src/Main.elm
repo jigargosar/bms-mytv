@@ -13,7 +13,7 @@ import Html
 import Html.Attributes as HA
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, div, h1, h3, source, text, video)
+import Html.Styled as H exposing (Html, div, h1, h3, img, source, text, video)
 import Html.Styled.Attributes as A exposing (class, href, src, type_)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
@@ -70,6 +70,7 @@ type alias Model =
     , route : Route
     , dataStr : String
     , videos : List Video
+    , playingVideo : Maybe Video
     }
 
 
@@ -140,6 +141,7 @@ init encodedFlags url key =
             , route = route
             , dataStr = ""
             , videos = []
+            , playingVideo = Nothing
             }
     in
     model
@@ -164,6 +166,7 @@ type Msg
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
     | GotData (Result Http.Error Value)
+    | PlayVideo Video
 
 
 
@@ -209,6 +212,9 @@ update message model =
             res
                 |> Result.Extra.unpack httpError gotData
                 |> callWith model
+
+        PlayVideo video ->
+            ( { model | playingVideo = Just video }, Cmd.none )
 
 
 httpError e model =
@@ -308,6 +314,7 @@ viewVideo : Video -> Html msg
 viewVideo video =
     div []
         [ div [ class "f3 pv1" ] [ text video.title ]
+        , img [ src video.imageUrl, onClick (PlayVideo video) ] []
         , div [] (viewSynopsis video.synopsis)
         ]
 

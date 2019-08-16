@@ -27,6 +27,15 @@ import UpdateExtra exposing (andThen, command, pure)
 import Url exposing (Url)
 
 
+type alias Video =
+    { id : String
+    , title : String
+    , synopsis : String
+    , videoUrl : String
+    , imageUrl : String
+    }
+
+
 videoDecoder : Decoder Video
 videoDecoder =
     let
@@ -202,15 +211,6 @@ update message model =
 
 httpError e model =
     pure model
-
-
-type alias Video =
-    { id : String
-    , title : String
-    , synopsis : String
-    , videoUrl : String
-    , imageUrl : String
-    }
 
 
 gotData : Value -> Model -> Return

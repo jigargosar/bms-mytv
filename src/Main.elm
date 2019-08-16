@@ -4,7 +4,6 @@ import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
 import Errors exposing (Errors)
-
 import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
 import FontAwesome.Styles
@@ -98,7 +97,6 @@ init encodedFlags url key =
 
 
 
-
 -- MSG
 
 
@@ -109,15 +107,13 @@ type Msg
 
 
 
-
 -- SUB
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [
-        ]
+        []
 
 
 
@@ -148,9 +144,6 @@ update message model =
                     Route.fromUrl url
             in
             ( { model | route = route }, {- queryTodoListForRouteCmd route -} Cmd.none )
-
-
-
 
 
 cacheEffect : Model -> Cmd msg
@@ -213,10 +206,13 @@ viewRoute route model =
             viewRoot model
 
 
+viewRoot : Model -> StyledDocument Msg
 viewRoot model =
-    {title = "Movie Trailers", body=[div [] [text "hw"]]}
-
-
+    { title = "Movie Trailers"
+    , body =
+        [ div [] [ text "hw" ]
+        ]
+    }
 
 
 faBtn : msg -> FAIcon.Icon -> Html msg

@@ -3,6 +3,7 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
+import Css exposing (int, lineHeight)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
@@ -14,7 +15,7 @@ import Html.Attributes as HA
 import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, div, h1, h3, img, source, text, video)
-import Html.Styled.Attributes as A exposing (class, height, href, src, type_, width)
+import Html.Styled.Attributes as A exposing (class, classList, css, height, href, src, type_, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
 import Http
@@ -307,7 +308,27 @@ viewVideos model =
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , div [ class "vs3" ] (List.map viewVideo model.videos)
+        , div [ class "pa3 flex flex-wrap justify-center" ] (List.map (viewImg model.playingVideo) model.videos)
+        ]
+
+
+viewImg pv video =
+    let
+        isPlaying =
+            pv == Just video
+    in
+    div
+        [ class "pa3"
+        , classList [ ( "mt4", isPlaying ) ]
+        , css [ lineHeight (int 0) ]
+        ]
+        [ img
+            [ src video.imageUrl
+            , onClick (Play video)
+            , width 345
+            , height 184
+            ]
+            []
         ]
 
 

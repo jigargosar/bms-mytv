@@ -7,14 +7,14 @@ import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, to
 
 type Route
     = NotFound Url
-    | FlipDemo
+    | Root
 
 
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
-        [ map FlipDemo top
-        , map FlipDemo (s "flip-demo")
+        [ map Root top
+        , map Root (s "root")
         ]
 
 

@@ -4,12 +4,12 @@ import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
 import Errors exposing (Errors)
-import FlipList exposing (FlipList)
+
 import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
 import FontAwesome.Styles
 import HasErrors
-import Html.Styled as H exposing (Html, div)
+import Html.Styled as H exposing (Html, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
@@ -29,8 +29,7 @@ import Url exposing (Url)
 
 
 type alias Model =
-    { flipList : FlipList
-    , errors : Errors
+    { errors : Errors
     , key : Nav.Key
     , route : Route
     }
@@ -88,8 +87,7 @@ init encodedFlags url key =
 
         model : Model
         model =
-            { flipList = FlipList.empty
-            , errors = Errors.fromStrings [ "Testing Error View" ]
+            { errors = Errors.fromStrings [ "Testing Error View" ]
             , key = key
             , route = route
             }
@@ -97,14 +95,7 @@ init encodedFlags url key =
     model
         |> pure
         |> andThen (updateFromEncodedFlags encodedFlags)
-        |> andThen
-            (\m ->
-                let
-                    ( flipList, cmd ) =
-                        FlipList.init
-                in
-                ( { m | flipList = flipList }, Cmd.map OnFlipListMsg cmd )
-            )
+
 
 
 
@@ -115,7 +106,7 @@ type Msg
     = NoOp
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
-    | OnFlipListMsg FlipList.Msg
+
 
 
 
@@ -125,7 +116,7 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ FlipList.subscriptions model.flipList |> Sub.map OnFlipListMsg
+        [
         ]
 
 
@@ -158,18 +149,8 @@ update message model =
             in
             ( { model | route = route }, {- queryTodoListForRouteCmd route -} Cmd.none )
 
-        OnFlipListMsg msg ->
-            updateFlipList msg model
 
 
-updateFlipList message model =
-    let
-        ( flipList, cmd ) =
-            FlipList.update message model.flipList
-    in
-    ( { model | flipList = flipList }
-    , Cmd.map OnFlipListMsg cmd
-    )
 
 
 cacheEffect : Model -> Cmd msg
@@ -226,20 +207,16 @@ viewRoute : Route -> Model -> StyledDocument Msg
 viewRoute route model =
     case route of
         Route.NotFound _ ->
-            viewRoute Route.FlipDemo model
+            viewRoute Route.Root model
 
-        Route.FlipDemo ->
-            viewFlipDemo model.flipList
+        Route.Root ->
+            viewRoot model
 
 
-viewFlipDemo : FlipList -> StyledDocument Msg
-viewFlipDemo flipList =
-    { title = "FlipList Demo"
-    , body =
-        [ lazy FlipList.view flipList
-            |> H.map OnFlipListMsg
-        ]
-    }
+viewRoot model =
+    {title = "Movie Trailers", body=[div [] [text "hw"]]}
+
+
 
 
 faBtn : msg -> FAIcon.Icon -> Html msg

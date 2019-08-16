@@ -33,13 +33,13 @@ initSubs({
     }
   },
   play: video => {
-    requestAnimationFrame(()=>playVideo(video))
+    requestAnimationFrame(() => playVideo(video))
   },
 })
 
 let myPlayer = null
 function playVideo(video) {
-  if(myPlayer){
+  if (myPlayer) {
     myPlayer.dispose()
   }
   myPlayer = amp(
@@ -59,6 +59,7 @@ function playVideo(video) {
       width: '345',
       height: '184',
       poster: video.imageUrl,
+      logo: { enabled: false },
     },
     function() {
       console.log('Good to go!')
@@ -68,12 +69,22 @@ function playVideo(video) {
       })
     },
   )
-  myPlayer.src([
-    {
-      src: video.videoUrl,
-      type: 'application/vnd.ms-sstr+xml',
-    },
-  ])
+  myPlayer.src(
+    [
+      {
+        src: video.videoUrl,
+        type: 'application/vnd.ms-sstr+xml',
+      },
+    ],
+    [
+      {
+        kind: 'captions',
+        src: '/subtitles.vtt',
+        srclang: 'en',
+        label: 'English',
+      },
+    ],
+  )
 }
 
 function initSubs(subs) {

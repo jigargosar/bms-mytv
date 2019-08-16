@@ -8,8 +8,10 @@ import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
 import FontAwesome.Styles
 import HasErrors
-import Html.Styled as H exposing (Html, div, text)
-import Html.Styled.Attributes exposing (class, href)
+import Html
+import Html.Attributes as HA
+import Html.Styled as H exposing (Html, div, source, text, video)
+import Html.Styled.Attributes as A exposing (class, href, src, type_)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
 import Http
@@ -98,8 +100,23 @@ init encodedFlags url key =
         |> command fetchData
 
 
+fetchData_ =
+    Http.request
+        { method = "GET"
+        , url = "https://cors-anywhere.herokuapp.com/https://in.bookmyshow.com/serv/getData?cmd=GETVIDEOS&category=MYTV"
+        , expect = Http.expectJson GotData JD.value
+        , headers = []
+        , body = Http.emptyBody
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
 fetchData =
-    Http.get { url = "", expect = Http.expectJson GotData JD.value }
+    Http.get
+        { url = "https://cors-anywhere.herokuapp.com/https://in.bookmyshow.com/serv/getData?cmd=GETVIDEOS&category=MYTV"
+        , expect = Http.expectJson GotData JD.value
+        }
 
 
 
@@ -230,9 +247,26 @@ viewRoot : Model -> StyledDocument Msg
 viewRoot model =
     { title = "Movie Trailers"
     , body =
-        [ div [] [ text "hw" ]
+        [ div []
+            [ text "hw"
+            ]
+        , div [ class "pa3 dn" ] [ lazy lv 1 ]
         ]
     }
+
+
+lv : a -> Html msg
+lv _ =
+    video
+        [ A.id "vid1"
+        , class "azuremediaplayer amp-default-skin"
+        ]
+        [ source
+            [ src "//bmsmedia.streaming.mediaservices.windows.net/9e2d5489-82dd-42cc-8cbb-6726a9f34cfa/roommates agreement revised.ism/manifest(format=m3u8-aapl)"
+            , type_ "application/vnd.ms-sstr+xml"
+            ]
+            []
+        ]
 
 
 faBtn : msg -> FAIcon.Icon -> Html msg

@@ -144,7 +144,7 @@ type Msg
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
     | GotData (Result Http.Error Value)
-    | PlayVideo Video
+    | Play Video
 
 
 
@@ -191,7 +191,7 @@ update message model =
                 |> Result.Extra.unpack httpError gotData
                 |> callWith model
 
-        PlayVideo video ->
+        Play video ->
             ( { model | playingVideo = Just video }, Ports.play video )
 
 
@@ -299,7 +299,7 @@ viewVideos model =
                   else
                     img
                         [ src video.imageUrl
-                        , onClick (PlayVideo video)
+                        , onClick (Play video)
                         , width 345
                         , height 184
                         ]

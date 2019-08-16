@@ -142,7 +142,7 @@ init encodedFlags url key =
     in
     model
         |> pure
-        |> andThen (updateFromEncodedFlags encodedFlags)
+        |> andThen (decodeAndUpdate flagsDecoder updateFromFlags encodedFlags)
         |> command fetchData
 
 
@@ -231,13 +231,6 @@ decodeAndUpdate decoder onSuccess encoded model =
 cacheEffect : Model -> Cmd msg
 cacheEffect model =
     Ports.setCache (cacheEncoder (cacheFromModel model))
-
-
-updateFromEncodedFlags : Value -> Model -> Return
-updateFromEncodedFlags encodedFlags model =
-    JD.decodeValue flagsDecoder encodedFlags
-        |> Result.Extra.unpack onDecodeError updateFromFlags
-        |> callWith model
 
 
 updateFromFlags : Flags -> Model -> Return

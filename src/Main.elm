@@ -43,7 +43,7 @@ videoDecoder =
             JDP.required name JD.string
     in
     JD.succeed Video
-        |> ds "videoId"
+        |> ds "videoID"
         |> ds "title"
         |> ds "synopsis"
         |> ds "videoURL"
@@ -133,7 +133,7 @@ init encodedFlags url key =
 
         model : Model
         model =
-            { errors = Errors.fromStrings [ "Testing Error View" ]
+            { errors = Errors.fromStrings []
             , key = key
             , route = route
             , dataStr = ""
@@ -285,14 +285,27 @@ viewRoot : Model -> StyledDocument Msg
 viewRoot model =
     { title = "Movie Trailers"
     , body =
-        [ div []
-            [ text "hw"
-            ]
+        [ HasErrors.detailView model
+        , viewVideos model.videos
         , div [ class "pre code" ] [ text model.dataStr ]
 
         --        , div [ class "pa3 dn" ] [ lazy lv 1 ]
         ]
     }
+
+
+viewVideos videos =
+    let
+        viewVideo video =
+            div []
+                [ div [] [ text video.id ]
+                , div [] [ text video.id ]
+                ]
+    in
+    div []
+        [ div [] [ text "Videos" ]
+        , div [] (List.map viewVideo videos)
+        ]
 
 
 

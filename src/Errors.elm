@@ -50,4 +50,4 @@ detailView (Errors errors) =
 
 viewError : Error -> Html msg
 viewError error =
-    li [] [ text error ]
+    li [ class "pre code" ] [ text error ]

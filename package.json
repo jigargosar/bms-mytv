@@ -1,0 +1,30 @@
+{
+  "name": "bms-movie-trailers",
+  "description": "bms-movie-trailers",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "Jigar Gosar <jigar.gosar@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "faker": "^4.1.0",
+    "fp-ts": "^2.0.3",
+    "nanoid": "^2.0.3",
+    "ow": "^0.13.2",
+    "ramda": "^0.26.1",
+    "tachyons": "^4.11.1"
+  },
+  "devDependencies": {
+    "@types/faker": "^4.1.5",
+    "@types/nanoid": "^2.0.0",
+    "@types/ramda": "^0.26.19",
+    "@types/webpack-env": "^1.14.0",
+    "elm-hot": "^1.1.2",
+    "node-elm-compiler": "^5.0.4",
+    "parcel-bundler": "^1.12.3"
+  }
+}

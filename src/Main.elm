@@ -12,6 +12,7 @@ import Html.Styled as H exposing (Html, div, text)
 import Html.Styled.Attributes exposing (class, href)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
+import Http
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
@@ -19,7 +20,7 @@ import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
 import Route exposing (Route)
-import UpdateExtra exposing (andThen, pure)
+import UpdateExtra exposing (andThen, command, pure)
 import Url exposing (Url)
 
 
@@ -94,6 +95,11 @@ init encodedFlags url key =
     model
         |> pure
         |> andThen (updateFromEncodedFlags encodedFlags)
+        |> command fetchData
+
+
+fetchData =
+    Http.get { url = "", expect = Http.expectJson GotData JD.value }
 
 
 
@@ -104,6 +110,7 @@ type Msg
     = NoOp
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
+    | GotData (Result Http.Error Value)
 
 
 
@@ -144,6 +151,19 @@ update message model =
                     Route.fromUrl url
             in
             ( { model | route = route }, {- queryTodoListForRouteCmd route -} Cmd.none )
+
+        GotData res ->
+            res
+                |> Result.Extra.unpack httpError gotData
+                |> callWith model
+
+
+httpError e model =
+    pure model
+
+
+gotData d model =
+    pure model
 
 
 cacheEffect : Model -> Cmd msg

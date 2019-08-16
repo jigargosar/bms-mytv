@@ -11,7 +11,9 @@ import FontAwesome.Styles
 import HasErrors
 import Html
 import Html.Attributes as HA
-import Html.Styled as H exposing (Html, div, source, text, video)
+import Html.Parser
+import Html.Parser.Util
+import Html.Styled as H exposing (Html, div, h1, h3, source, text, video)
 import Html.Styled.Attributes as A exposing (class, href, src, type_)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
@@ -294,18 +296,33 @@ viewRoot model =
     }
 
 
+viewVideos : List Video -> Html msg
 viewVideos videos =
-    let
-        viewVideo video =
-            div []
-                [ div [] [ text video.id ]
-                , div [] [ text video.id ]
-                ]
-    in
     div []
-        [ div [] [ text "Videos" ]
-        , div [] (List.map viewVideo videos)
+        [ div [ class "f2 " ] [ text "Videos" ]
+        , div [ class "vs3" ] (List.map viewVideo videos)
         ]
+
+
+viewVideo : Video -> Html msg
+viewVideo video =
+    div []
+        [ div [ class "f3 pv1" ] [ text video.title ]
+        , div [] (viewSynopsis video.synopsis)
+        ]
+
+
+
+--https://github.com/elm/html/issues/172#issuecomment-417891199
+
+
+viewSynopsis : String -> List (Html msg)
+viewSynopsis synopsis =
+    Html.Parser.run synopsis
+        |> Result.Extra.unpack (\_ -> [ text "" ])
+            (Html.Parser.Util.toVirtualDom
+                >> List.map H.fromUnstyled
+            )
 
 
 

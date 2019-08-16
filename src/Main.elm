@@ -302,7 +302,7 @@ viewRoot model =
     }
 
 
-viewVideos : List Video -> Html msg
+viewVideos : List Video -> Html Msg
 viewVideos videos =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
@@ -310,7 +310,7 @@ viewVideos videos =
         ]
 
 
-viewVideo : Video -> Html msg
+viewVideo : Video -> Html Msg
 viewVideo video =
     div []
         [ div [ class "f3 pv1" ] [ text video.title ]

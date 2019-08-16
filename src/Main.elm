@@ -274,8 +274,6 @@ viewRoot model =
         [ HasErrors.detailView model
         , viewVideos model
         , div [ class "pre code" ] [ text model.dataStr ]
-
-        --        , div [ class "pa3 dn" ] [ lazy lv 1 ]
         ]
     }
 
@@ -324,21 +322,6 @@ viewSynopsis synopsis =
             (Html.Parser.Util.toVirtualDom
                 >> List.map H.fromUnstyled
             )
-
-
-
---lv : a -> Html msg
---lv _ =
---    video
---        [ A.id "vid1"
---        , class "azuremediaplayer amp-default-skin"
---        ]
---        [ source
---            [ src "//bmsmedia.streaming.mediaservices.windows.net/9e2d5489-82dd-42cc-8cbb-6726a9f34cfa/roommates agreement revised.ism/manifest(format=m3u8-aapl)"
---            , type_ "application/vnd.ms-sstr+xml"
---            ]
---            []
---        ]
 
 
 faBtn : msg -> FAIcon.Icon -> Html msg

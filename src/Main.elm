@@ -294,7 +294,7 @@ viewRoot model =
     { title = "Movie Trailers"
     , body =
         [ HasErrors.detailView model
-        , viewVideos model.videos
+        , viewVideos model
         , div [ class "pre code" ] [ text model.dataStr ]
 
         --        , div [ class "pa3 dn" ] [ lazy lv 1 ]
@@ -302,20 +302,24 @@ viewRoot model =
     }
 
 
-viewVideos : List Video -> Html Msg
-viewVideos videos =
+viewVideos : Model -> Html Msg
+viewVideos model =
+    let
+        viewVideo : Video -> Html Msg
+        viewVideo video =
+            div []
+                [ div [ class "f3 pv1" ] [ text video.title ]
+                , if model.playingVideo == Just video then
+                    H.video [] []
+
+                  else
+                    img [ src video.imageUrl, onClick (PlayVideo video) ] []
+                , div [] (viewSynopsis video.synopsis)
+                ]
+    in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , div [ class "vs3" ] (List.map viewVideo videos)
-        ]
-
-
-viewVideo : Video -> Html Msg
-viewVideo video =
-    div []
-        [ div [ class "f3 pv1" ] [ text video.title ]
-        , img [ src video.imageUrl, onClick (PlayVideo video) ] []
-        , div [] (viewSynopsis video.synopsis)
+        , div [ class "vs3" ] (List.map viewVideo model.videos)
         ]
 
 

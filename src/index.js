@@ -1,15 +1,6 @@
 import './index.css'
 import { Elm } from './Main.elm'
-// import { Elm } from './elm.min'
-import { Fire } from './fire'
-import {
-  mapObjIndexed,
-  identity,
-  propOr,
-  forEachObjIndexed,
-  path,
-  isNil,
-} from 'ramda'
+import { forEachObjIndexed, isNil, mapObjIndexed, path, propOr } from 'ramda'
 
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({

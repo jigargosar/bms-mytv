@@ -10,6 +10,7 @@ port module Ports exposing
     , onFirestoreQueryResponse
     , onTodoListChanged
     , persistTodoList
+    , play
     , queryFirestore
     , setCache
     , signIn
@@ -18,6 +19,10 @@ port module Ports exposing
     )
 
 import Json.Encode exposing (Value)
+import Video exposing (Video)
+
+
+port play : Video -> Cmd msg
 
 
 port localStorageSetStringItem : ( String, String ) -> Cmd msg

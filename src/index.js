@@ -1,7 +1,13 @@
 import 'tachyons'
 import './index.css'
 import { Elm } from './Main.elm'
-import { forEachObjIndexed, isNil, mapObjIndexed, path, propOr } from 'ramda'
+import {
+  forEachObjIndexed,
+  isNil,
+  mapObjIndexed,
+  path,
+  propOr,
+} from 'ramda'
 
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
@@ -26,7 +32,49 @@ initSubs({
       localStorage.setItem(storageKey, JSON.stringify(cache))
     }
   },
+  play: video => {
+    requestAnimationFrame(()=>playVideo(video))
+  },
 })
+
+let myPlayer = null
+function playVideo(video) {
+  if(myPlayer){
+    myPlayer.dispose()
+  }
+  myPlayer = amp(
+    video.id,
+    {
+      /* Options */
+      techOrder: [
+        'azureHtml5JS',
+        'flashSS',
+        'html5FairPlayHLS',
+        'silverlightSS',
+        'html5',
+      ],
+      nativeControlsForTouch: false,
+      autoplay: true,
+      controls: true,
+      width: '640',
+      height: '400',
+      poster: video.imageUrl,
+    },
+    function() {
+      console.log('Good to go!')
+      // add an event listener
+      this.addEventListener('ended', function() {
+        console.log('Finished!')
+      })
+    },
+  )
+  myPlayer.src([
+    {
+      src: video.videoUrl,
+      type: 'application/vnd.ms-sstr+xml',
+    },
+  ])
+}
 
 function initSubs(subs) {
   forEachObjIndexed((listener, portName) => {
@@ -60,25 +108,3 @@ function initPubs(pubs) {
     }
   })(pubs)
 }
-
-
-// var myPlayer = amp('vid1', { /* Options */
-//     techOrder: ["azureHtml5JS", "flashSS", "html5FairPlayHLS","silverlightSS", "html5"],
-//     "nativeControlsForTouch": false,
-//     autoplay: false,
-//     controls: true,
-//     width: "640",
-//     height: "400",
-//     poster: ""
-//   }, function() {
-//     console.log('Good to go!');
-//     // add an event listener
-//     this.addEventListener('ended', function() {
-//       console.log('Finished!');
-//     })
-//   }
-// );
-// myPlayer.src([{
-//   src: "http://samplescdn.origin.mediaservices.windows.net/e0e820ec-f6a2-4ea2-afe3-1eed4e06ab2c/AzureMediaServices_Overview.ism/manifest",
-//   type: "application/vnd.ms-sstr+xml"
-// }]);

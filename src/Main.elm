@@ -27,35 +27,13 @@ import Return
 import Route exposing (Route)
 import UpdateExtra exposing (andThen, command, pure)
 import Url exposing (Url)
-
-
-type alias Video =
-    { id : String
-    , title : String
-    , synopsis : String
-    , videoUrl : String
-    , imageUrl : String
-    }
-
-
-videoDecoder : Decoder Video
-videoDecoder =
-    let
-        ds name =
-            JDP.required name JD.string
-    in
-    JD.succeed Video
-        |> ds "videoID"
-        |> ds "title"
-        |> ds "synopsis"
-        |> ds "videoURL"
-        |> ds "imageURL"
+import Video exposing (Video)
 
 
 videoListDecoder : Decoder (List Video)
 videoListDecoder =
     JD.at [ "MYTV", "CategoryVideoDetails" ]
-        (JD.dict videoDecoder
+        (JD.dict Video.videoDecoder
             |> JD.map Dict.values
         )
 
@@ -214,7 +192,7 @@ update message model =
                 |> callWith model
 
         PlayVideo video ->
-            ( { model | playingVideo = Just video }, Cmd.none )
+            ( { model | playingVideo = Just video }, Ports.play video )
 
 
 httpError e model =
@@ -310,7 +288,11 @@ viewVideos model =
             div []
                 [ div [ class "f3 pv1" ] [ text video.title ]
                 , if model.playingVideo == Just video then
-                    H.video [] []
+                    H.video
+                        [ A.id video.id
+                        , class "azuremediaplayer amp-default-skin"
+                        ]
+                        []
 
                   else
                     img [ src video.imageUrl, onClick (PlayVideo video) ] []

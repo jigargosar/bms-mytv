@@ -98,8 +98,8 @@ flagsDecoder =
         |> JDP.required "cache" cacheDecoder
 
 
-setDataStr : Value -> Model -> Model
-setDataStr encoded model =
+formatAndSetEncodedData : Value -> Model -> Model
+formatAndSetEncodedData encoded model =
     { model | dataStr = JE.encode 2 encoded }
 
 
@@ -215,20 +215,14 @@ type alias Video =
 
 gotData : Value -> Model -> Return
 gotData encodedData model =
-    setDataStr encodedData model
-        |> decodeAndSetVideos encodedData
-
-
-decodeAndSetVideos : Value -> Model -> Return
-decodeAndSetVideos encoded model =
-    model
-        |> decodeHelp videoListDecoder
+    formatAndSetEncodedData encodedData model
+        |> decodeAndUpdate videoListDecoder
             (\videos -> setVideos videos >> pure)
-            encoded
+            encodedData
 
 
-decodeHelp : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return
-decodeHelp decoder onSuccess encoded model =
+decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return
+decodeAndUpdate decoder onSuccess encoded model =
     JD.decodeValue decoder encoded
         |> Result.Extra.unpack onDecodeError onSuccess
         |> callWith model

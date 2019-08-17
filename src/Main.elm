@@ -367,21 +367,34 @@ viewGallery model =
 
         viewCell vid =
             div
-                [ class "flex-grow-1 flex-shrink-1 flex items-center justify-center"
-                , css [ lh0, flexBasis (px 0) ]
-                ]
-                [ img
-                    [ src vid.imageUrl
-                    , css [ lh0 ]
+                [ class "tc flex-grow-1 flex-shrink-1"
+                , css
+                    [ flexBasis (px 0)
+                    , maxWidth <| px 300
                     ]
-                    []
+
+                --                , class "flex flex-column"
+                ]
+                [ div
+                    [ css []
+                    , class "flex items-center justify-center"
+
+                    --                    , class "pa1"
+                    ]
+                    [ img
+                        [ src vid.imageUrl
+                        , css []
+                        ]
+                        []
+                    ]
+                , div [ class "tc " ] [ text vid.title ]
                 ]
 
         viewRow vids =
-            div [ class "flex" ] (List.map viewCell vids)
+            div [ class "flex " ] (List.map viewCell vids)
 
         viewRows =
-            div []
+            div [ class "flex flex-column items-center" ]
                 (model.videos
                     |> List.Extra.groupsOf thumbsPerRow
                     |> List.map viewRow

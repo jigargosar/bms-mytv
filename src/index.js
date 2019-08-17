@@ -13,7 +13,7 @@ const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
   flags: {
     cache: JSON.parse(localStorage.getItem(storageKey) || 'null'),
-    size: {width:window.innerWidth, height:window.innerHeight}
+    size: { width: window.innerWidth, height: window.innerHeight },
   },
 })
 
@@ -43,13 +43,17 @@ function playVideo(video) {
   if (myPlayer) {
     myPlayer.dispose()
   }
-  let videoElId = video.id
-  if(!document.getElementById(videoElId)){
-    console.warn("Play Error domId Not Found", videoElId)
+  let videoContainerID = video.id
+  let videoContainer = document.getElementById(videoContainerID)
+  if (!videoContainer) {
+    console.warn('Play Error domId Not Found', videoContainerID)
     return
   }
+  videoContainer.innerHTML =
+    `<video         
+        class="azuremediaplayer amp-default-skin"/>`
   myPlayer = amp(
-    videoElId,
+    videoContainer.firstChild,
     {
       /* Options */
       techOrder: [
@@ -62,13 +66,15 @@ function playVideo(video) {
       nativeControlsForTouch: false,
       autoplay: true,
       controls: true,
-      width: '345',
-      height: '184',
+      // width: '345',
+      width: '100%',
+      // height: '184',
       poster: video.imageUrl,
       logo: { enabled: false },
     },
     function() {
       console.log('Good to go!')
+      setTimeout(() => myPlayer.dispose(), 1000)
       // add an event listener
       this.addEventListener('ended', function() {
         console.log('Finished!')

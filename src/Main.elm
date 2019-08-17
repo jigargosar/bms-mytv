@@ -12,7 +12,7 @@ import FontAwesome.Styles
 import HasErrors
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, div, img, text, video)
+import Html.Styled as H exposing (Html, div, img, p, text, video)
 import Html.Styled.Attributes as A exposing (class, css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
@@ -401,7 +401,19 @@ viewRow model videos =
 
 
 viewPlayingRow video =
-    [ lazy ampVideo video.id
+    let
+        videoTag =
+            lazy ampVideo video.id
+    in
+    [ div [ class "flex" ]
+        [ div [ A.id video.id, class "w-60" ] []
+        , div
+            [ class "w-30"
+            , css [ Css.height <| px 200 ]
+            ]
+            [ p [] [ text mockSynShort ]
+            ]
+        ]
     ]
 
 

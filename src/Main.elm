@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import BasicsExtra exposing (callWith)
 import Browser
+import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Css exposing (flexBasis, fontSize, int, lineHeight, maxWidth, num, pct, px, zero)
 import Dict
@@ -208,7 +209,11 @@ update message model =
                 |> callWith model
 
         Play video ->
-            ( { model | playingVideo = Just video }, Ports.play video )
+            ( { model | playingVideo = Just video }
+            , Cmd.batch
+                [ Ports.play video
+                ]
+            )
 
 
 httpError _ model =
@@ -317,7 +322,7 @@ viewGallery model =
 viewRows : Model -> List (List Video) -> Html Msg
 viewRows model groupedVideos =
     K.node "div"
-        [ class "flex flex-column items-center" ]
+        [ class "flex flex-column _items-center" ]
         (groupedVideos
             |> List.indexedMap (viewRow model)
             |> List.concat
@@ -329,7 +334,7 @@ viewRow model rowIdx videos =
     let
         playingRow =
             playingVideoInList model videos
-                |> Maybe.Extra.unwrap [] viewPlayingRow
+                |> Maybe.Extra.unwrap [] (viewPlayingRow model)
     in
     playingRow ++ [ ( String.fromInt rowIdx, div [ class "flex " ] (List.map viewCell videos) ) ]
 
@@ -350,18 +355,28 @@ videoContainerDomId videoId =
     videoId
 
 
-viewPlayingRow : Video -> List ( String, Html Msg )
-viewPlayingRow video =
+viewPlayingRow : Model -> Video -> List ( String, Html Msg )
+viewPlayingRow model video =
+    let
+        vidWidth =
+            toFloat model.size.width
+                * 60
+                / 100
+                |> Debug.log "vidWidth"
+
+        vidHeight =
+            9 / 16 * vidWidth
+    in
     [ ( video.id
-      , div [ class "flex w-100", css [ Css.height <| px 400 ] ]
-            [ div [ class "w-60 relative" ]
+      , div [ class "flex w-100" ]
+            [ div [ class "w-60 relative bg-black" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
 
                 --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
                 ]
             , div
                 [ class "w-40 flex flex-column"
-                , css [{- Css.height <| px 200 -}]
+                , css [ Css.height <| px (vidHeight - 6) ]
                 ]
                 [ div [ class "f4" ] [ text video.title ]
                 , div [ class "f7 overflow-auto lh-copy" ]
@@ -378,7 +393,8 @@ viewCell vid =
         [ class "tc flex-grow-1 flex-shrink-1"
         , css
             [ flexBasis (px 0)
-            , maxWidth <| px 300
+
+            --            , maxWidth <| px 250
             ]
 
         --                , class "flex flex-column"
@@ -393,6 +409,7 @@ viewCell vid =
             [ img
                 [ src vid.imageUrl
                 , css []
+                , class "w-100"
                 ]
                 []
             ]
@@ -414,7 +431,7 @@ viewSynopsis synopsis =
     Html.Parser.run synopsis
         |> Result.Extra.unpack (\_ -> [ text "" ])
             (removeTopLevelParagraphTag
-                >> List.Extra.takeWhile (isBrTag >> not)
+                --                >> List.Extra.takeWhile (isBrTag >> not)
                 >> Html.Parser.Util.toVirtualDom
                 >> List.map H.fromUnstyled
             )

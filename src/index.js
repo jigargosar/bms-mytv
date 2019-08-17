@@ -49,6 +49,9 @@ function playVideo(video) {
     console.warn('Play Error domId Not Found', videoContainerID)
     return
   }
+  // debugger
+  // const width = videoContainer.getBoundingClientRect().width
+  // const height =
   videoContainer.innerHTML =
     `<video         
         class="azuremediaplayer amp-default-skin"/>`
@@ -67,8 +70,9 @@ function playVideo(video) {
       autoplay: true,
       controls: true,
       // width: '345',
-      width: '100%',
-      height: '400',
+      // width: '100%',
+      // height: '400',
+      fluid:true, 
       poster: video.imageUrl,
       logo: { enabled: false },
     },
@@ -81,6 +85,7 @@ function playVideo(video) {
       })
     },
   )
+  
   myPlayer.src(
     [
       {

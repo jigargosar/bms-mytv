@@ -14,7 +14,7 @@ import HasErrors
 import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, div, img, p, text, video)
-import Html.Styled.Attributes as A exposing (class, css, height, href, src, width)
+import Html.Styled.Attributes as A exposing (class, css, height, href, src, style, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as K
 import Html.Styled.Lazy exposing (lazy)
@@ -298,7 +298,8 @@ viewHome model =
     , body =
         [ HasErrors.detailView model
         , viewGallery model
-        , div [ class "pre code" ] [ text model.dataStr ]
+
+        --        , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
 
@@ -368,13 +369,11 @@ viewPlayingRow model video =
             9 / 16 * vidWidth
     in
     [ ( video.id
-      , div [ class "flex w-100" ]
-            [ div [ class "w-60 relative " ]
+      , div [ class "flex w-100 bg-black-20" ]
+            [ div [ class "w-60 relative bg-black-10" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
-
-                --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
                 ]
-            , div [ class "w-40 ph2 " ]
+            , div [ class "w-40 ph4 " ]
                 [ div
                     [ class "vs3 flex flex-column"
                     , css [ Css.height <| px (vidHeight - 6) ]
@@ -392,7 +391,7 @@ viewPlayingRow model video =
 
 viewCell vid =
     div
-        [ class "flex-grow-1 flex-shrink-1"
+        [ class "flex-grow-1 flex-shrink-1 relative"
         , css
             [ flexBasis (px 0)
 
@@ -415,9 +414,11 @@ viewCell vid =
                 ]
                 []
             ]
-        , div []
-            [ div [ class "ph2 f7 lh-copy" ] [ text vid.title ]
+        , div
+            [ class "pa2 f6 lh-title "
+            , style "text-shadow" "1px 1px 2px black"
             ]
+            [ text vid.title ]
         ]
 
 

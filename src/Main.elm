@@ -387,7 +387,9 @@ viewGallery model =
                         ]
                         []
                     ]
-                , div [ class "tc " ] [ text vid.title ]
+                , div []
+                    [ div [ class "tc ph2" ] [ text vid.title ]
+                    ]
                 ]
 
         viewRow vids =

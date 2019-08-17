@@ -15,6 +15,7 @@ import Html.Parser.Util
 import Html.Styled as H exposing (Html, div, img, text, video)
 import Html.Styled.Attributes as A exposing (class, css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Lazy exposing (lazy)
 import Http
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
@@ -400,7 +401,7 @@ viewRow model videos =
 
 
 viewPlayingRow video =
-    [ ampVideo video.id
+    [ lazy ampVideo video.id
     ]
 
 

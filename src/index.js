@@ -42,8 +42,13 @@ function playVideo(video) {
   if (myPlayer) {
     myPlayer.dispose()
   }
+  let videoElId = video.id
+  if(!document.getElementById(videoElId)){
+    console.warn("Play Error domId Not Found", videoElId)
+    return
+  }
   myPlayer = amp(
-    video.id,
+    videoElId,
     {
       /* Options */
       techOrder: [

@@ -365,12 +365,13 @@ viewGallery model =
         thumbsPerRow =
             model.size.width // 250
 
+        groupedVideos =
+            model.videos
+                |> List.Extra.groupsOf thumbsPerRow
+
         viewRows =
             div [ class "flex flex-column items-center" ]
-                (model.videos
-                    |> List.Extra.groupsOf thumbsPerRow
-                    |> List.map viewRow
-                )
+                (groupedVideos |> List.map viewRow)
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]

@@ -367,8 +367,6 @@ viewGallery model =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , viewRows model groupedVideos
-        , div [ class "pa3 flex flex-wrap justify-center" ]
-            (List.map (viewThumb model.playingVideo) model.videos)
         ]
 
 
@@ -401,14 +399,11 @@ viewRow model videos =
 
 
 viewPlayingRow video =
-    let
-        videoTag =
-            lazy ampVideo video.id
-    in
     [ div [ class "flex" ]
         [ div [ class "w-60 relative" ]
             [ div [ A.id video.id ] []
-            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
+
+            --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
             ]
         , div
             [ class "w-30"
@@ -418,14 +413,6 @@ viewPlayingRow video =
             ]
         ]
     ]
-
-
-ampVideo id =
-    H.video
-        [ A.id id
-        , class "azuremediaplayer amp-default-skin"
-        ]
-        []
 
 
 viewCell vid =
@@ -457,57 +444,13 @@ viewCell vid =
         ]
 
 
-viewVideo : Model -> Video -> Html Msg
-viewVideo model video =
-    div []
-        [ div [ class "f3 pv1" ] [ text video.title ]
-        , if model.playingVideo == Just video then
-            H.video
-                [ A.id video.id
-                , class "azuremediaplayer amp-default-skin"
-                , width 345
-                , height 184
-                ]
-                []
+{-| Prevent XSS since synopsis contains HTML
 
-          else
-            img
-                [ src video.imageUrl
-                , onClick (Play video)
-                , width 345
-                , height 184
-                ]
-                []
-        , div [] (viewSynopsis video.synopsis)
-        ]
+  - Why does elm does this?
+    A: Excellent explanation from Creator of Elm
+    <https://github.com/elm/html/issues/172#issuecomment-417891199>
 
-
-viewThumb pv video =
-    let
-        isPlaying =
-            pv == Just video
-    in
-    div
-        [ class "pa3"
-
-        --        , classList [ ( "mt4", isPlaying ) ]
-        , css [ lineHeight (int 0) ]
-        ]
-        [ img
-            [ src video.imageUrl
-
-            --            , onClick (Play video)
-            --            , width 345
-            --            , height 184
-            ]
-            []
-        ]
-
-
-
---https://github.com/elm/html/issues/172#issuecomment-417891199
-
-
+-}
 viewSynopsis : String -> List (Html Msg)
 viewSynopsis synopsis =
     Html.Parser.run synopsis

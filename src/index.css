@@ -32,7 +32,9 @@ body {
 svg {
   shape-rendering: auto;
 }
-
+video{
+  outline: none;
+}
 code,
 .code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

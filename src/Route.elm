@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromUrl, toFlipDemoUrl)
+module Route exposing (Route(..), fromUrl, toMockUrl, toRootUrl)
 
 import Url exposing (Url)
 import Url.Builder as B
@@ -8,6 +8,7 @@ import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, to
 type Route
     = NotFound Url
     | Root
+    | Mock
 
 
 routeParser : Parser (Route -> a) a
@@ -15,6 +16,7 @@ routeParser =
     oneOf
         [ map Root top
         , map Root (s "root")
+        , map Mock (s "mock")
         ]
 
 
@@ -24,6 +26,11 @@ fromUrl url =
         |> Maybe.withDefault (NotFound url)
 
 
-toFlipDemoUrl : String
-toFlipDemoUrl =
-    B.absolute [ "flip-demo" ] []
+toMockUrl : String
+toMockUrl =
+    B.absolute [ "mock" ] []
+
+
+toRootUrl : String
+toRootUrl =
+    B.absolute [ "" ] []

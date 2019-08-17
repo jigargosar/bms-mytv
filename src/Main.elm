@@ -3,7 +3,7 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
-import Css exposing (int, lineHeight)
+import Css exposing (int, lineHeight, zero)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
@@ -266,6 +266,33 @@ viewRoute route model =
 
         Route.Root ->
             viewRoot model
+
+        Route.Mock ->
+            viewMock model
+
+
+viewMock model =
+    { title = "Video Grid Layout Mock"
+    , body =
+        [ HasErrors.detailView model
+        , viewMockGrid model
+        ]
+    }
+
+
+imageUrl num =
+    "img" ++ String.fromInt num ++ ".jpg"
+
+
+viewMockGrid model =
+    let
+        viewImage num =
+            div [ css [ lineHeight zero ] ] [ img [ src <| imageUrl num ] [] ]
+    in
+    div []
+        [ div [] [ img [ src <| imageUrl 1 ] [] ]
+        , div [] (List.range 1 4 |> List.map viewImage)
+        ]
 
 
 viewRoot : Model -> StyledDocument Msg

@@ -353,7 +353,7 @@ videoContainerDomId videoId =
 viewPlayingRow : Video -> List ( String, Html Msg )
 viewPlayingRow video =
     [ ( video.id
-      , div [ class "flex w-100", css [ Css.height <| px 300 ] ]
+      , div [ class "flex w-100", css [ Css.height <| px 400 ] ]
             [ div [ class "w-60 relative" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
 
@@ -363,8 +363,10 @@ viewPlayingRow video =
                 [ class "w-40 flex flex-column"
                 , css [{- Css.height <| px 200 -}]
                 ]
-                [ div [] [ text video.title ]
-                , div [ class "overflow-y-auto" ] (viewSynopsis video.synopsis)
+                [ div [ class "f4" ] [ text video.title ]
+                , div [ class "f7 overflow-auto lh-copy" ]
+                    [ div [] (viewSynopsis video.synopsis)
+                    ]
                 ]
             ]
       )
@@ -411,9 +413,29 @@ viewSynopsis : String -> List (Html Msg)
 viewSynopsis synopsis =
     Html.Parser.run synopsis
         |> Result.Extra.unpack (\_ -> [ text "" ])
-            (Html.Parser.Util.toVirtualDom
+            (removeTopLevelParagraphTag
+                >> List.Extra.takeWhile (isBrTag >> not)
+                >> Html.Parser.Util.toVirtualDom
                 >> List.map H.fromUnstyled
             )
+
+
+isBrTag node =
+    case node of
+        Html.Parser.Element "br" _ _ ->
+            True
+
+        _ ->
+            False
+
+
+removeTopLevelParagraphTag list =
+    case list of
+        [ Html.Parser.Element "p" _ nodes ] ->
+            nodes
+
+        _ ->
+            list
 
 
 faBtn : msg -> FAIcon.Icon -> Html msg

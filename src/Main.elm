@@ -23,6 +23,7 @@ import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
 import List.Extra
+import Maybe.Extra
 import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
@@ -371,13 +372,20 @@ viewGallery model =
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , viewRows groupedVideos
+        , model.playingVideo
+            |> Maybe.Extra.unpack (\_ -> viewRows groupedVideos)
+                (viewPlayingRows groupedVideos)
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
         ]
 
 
 viewRows groupedVideos =
+    div [ class "flex flex-column items-center" ]
+        (groupedVideos |> List.map viewRow)
+
+
+viewPlayingRows groupedVideos playingVideo =
     div [ class "flex flex-column items-center" ]
         (groupedVideos |> List.map viewRow)
 

@@ -365,36 +365,6 @@ viewGallery model =
         thumbsPerRow =
             model.size.width // 250
 
-        viewCell vid =
-            div
-                [ class "tc flex-grow-1 flex-shrink-1"
-                , css
-                    [ flexBasis (px 0)
-                    , maxWidth <| px 300
-                    ]
-
-                --                , class "flex flex-column"
-                ]
-                [ div
-                    [ css []
-                    , class "flex items-center justify-center"
-
-                    --                    , class "pa1"
-                    ]
-                    [ img
-                        [ src vid.imageUrl
-                        , css []
-                        ]
-                        []
-                    ]
-                , div []
-                    [ div [ class "tc ph2" ] [ text vid.title ]
-                    ]
-                ]
-
-        viewRow vids =
-            div [ class "flex " ] (List.map viewCell vids)
-
         viewRows =
             div [ class "flex flex-column items-center" ]
                 (model.videos
@@ -408,6 +378,38 @@ viewGallery model =
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
         ]
+
+
+viewCell vid =
+    div
+        [ class "tc flex-grow-1 flex-shrink-1"
+        , css
+            [ flexBasis (px 0)
+            , maxWidth <| px 300
+            ]
+
+        --                , class "flex flex-column"
+        ]
+        [ div
+            [ css []
+            , class "flex items-center justify-center"
+
+            --                    , class "pa1"
+            ]
+            [ img
+                [ src vid.imageUrl
+                , css []
+                ]
+                []
+            ]
+        , div []
+            [ div [ class "tc ph2" ] [ text vid.title ]
+            ]
+        ]
+
+
+viewRow videos =
+    div [ class "flex " ] (List.map viewCell videos)
 
 
 viewVideo : Model -> Video -> Html Msg

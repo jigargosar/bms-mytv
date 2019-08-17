@@ -376,10 +376,10 @@ viewPlayingRow model video =
                 ]
             , div [ class "w-40 ph2 " ]
                 [ div
-                    [ class "flex flex-column"
+                    [ class "vs3 flex flex-column"
                     , css [ Css.height <| px (vidHeight - 6) ]
                     ]
-                    [ div [ class "f4" ] [ text video.title ]
+                    [ div [ class "f4 lh-title" ] [ text video.title ]
                     , div [ class "f7 overflow-hidden lh-copy" ]
                         [ div [] (viewSynopsis video.synopsis)
                         ]
@@ -392,7 +392,7 @@ viewPlayingRow model video =
 
 viewCell vid =
     div
-        [ class "tc flex-grow-1 flex-shrink-1"
+        [ class "flex-grow-1 flex-shrink-1"
         , css
             [ flexBasis (px 0)
 
@@ -416,7 +416,7 @@ viewCell vid =
                 []
             ]
         , div []
-            [ div [ class "tc ph2" ] [ text vid.title ]
+            [ div [ class "ph2 f7 lh-copy" ] [ text vid.title ]
             ]
         ]
 

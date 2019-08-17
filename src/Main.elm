@@ -319,6 +319,16 @@ viewRows model groupedVideos =
         (groupedVideos |> List.concatMap (viewRow model))
 
 
+viewRow : Model -> List Video -> List (Html Msg)
+viewRow model videos =
+    let
+        playingRow =
+            playingVideoInList model videos
+                |> Maybe.Extra.unwrap [] viewPlayingRow
+    in
+    playingRow ++ [ div [ class "flex " ] (List.map viewCell videos) ]
+
+
 playingVideoInList model videos =
     model.playingVideo
         |> Maybe.andThen
@@ -329,16 +339,6 @@ playingVideoInList model videos =
                 else
                     Nothing
             )
-
-
-viewRow : Model -> List Video -> List (Html Msg)
-viewRow model videos =
-    let
-        playingRow =
-            playingVideoInList model videos
-                |> Maybe.Extra.unwrap [] viewPlayingRow
-    in
-    playingRow ++ [ div [ class "flex " ] (List.map viewCell videos) ]
 
 
 viewPlayingRow video =

@@ -346,12 +346,16 @@ playingVideoInList model videos =
             )
 
 
+videoContainerDomId videoId =
+    videoId
+
+
 viewPlayingRow : Video -> List ( String, Html Msg )
 viewPlayingRow video =
     [ ( video.id
       , div [ class "flex w-100" ]
             [ div [ class "w-60 relative" ]
-                [ div [ A.id video.id ] []
+                [ div [ A.id <| videoContainerDomId video.id ] []
 
                 --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
                 ]

@@ -3,21 +3,18 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
-import Css exposing (auto, display, ellipsis, flexBasis, fontSize, hidden, int, lineHeight, maxHeight, maxWidth, none, num, overflow, pct, px, rem, textOverflow, zero)
+import Css exposing (flexBasis, fontSize, int, lineHeight, maxWidth, num, pct, px, zero)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
 import FontAwesome.Styles
 import HasErrors
-import Html
-import Html.Attributes as HA
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, div, h1, h3, img, p, source, text, video)
-import Html.Styled.Attributes as A exposing (class, classList, css, height, href, src, type_, width)
+import Html.Styled as H exposing (Html, div, img, text, video)
+import Html.Styled.Attributes as A exposing (class, css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
-import Html.Styled.Lazy exposing (lazy)
 import Http
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
@@ -166,7 +163,7 @@ type Msg
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.batch
         [ Size.onBrowserResize OnResize ]
 
@@ -212,7 +209,7 @@ update message model =
             ( { model | playingVideo = Just video }, Ports.play video )
 
 
-httpError e model =
+httpError _ model =
     pure model
 
 
@@ -309,7 +306,7 @@ mockSynShort =
     "Your daily dose of news and gossip is back with Tea And T.V. The Kapil Sharma Show will soon have Vidya Balan</a> and Arjun Rampal as special guests and as usual Kapil didn&#39;t miss a chance to take a dig at Vidya and her obsession with the word &#39;Kahani&#39;, he even suggested Arjun to join politics and he gave a hilarious justification for it.<br /><br />Bigg Boss 10 house has a new captain and she&#39;s none other than VJ Bani, as soon as she became the captain, punishments and arguments followed. Swami Omji is having fun with Monalisa, he&#39;s playing with her in swimming pool and guess what Manoj is getting very jealous. Karan Patel has found the right balance between reel life and real, he recently shared a picture which clearly shows his happiness.<br /><br />Mouni Roy will soon be seen in a hot item song in the film Tum Bin 2 and she has started promoting it well, she has challenged few of her close television friends to show their dancing talent.<br /><br />Comedy Nights "
 
 
-viewMockGrid model =
+viewMockGrid _ =
     let
         viewImage idxFromOne =
             div [ css [ lineHeight zero, fontSize (pct 100) ] ] [ img [ src <| imageUrl idxFromOne ] [] ]
@@ -354,10 +351,6 @@ viewHome model =
         , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
-
-
-lh0 =
-    lineHeight zero
 
 
 viewGallery : Model -> Html Msg
@@ -407,7 +400,16 @@ viewRow model videos =
 
 
 viewPlayingRow video =
-    [ div [] [ text "playing video" ] ]
+    [ ampVideo video.id
+    ]
+
+
+ampVideo id =
+    H.video
+        [ A.id id
+        , class "azuremediaplayer amp-default-skin"
+        ]
+        []
 
 
 viewCell vid =

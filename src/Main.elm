@@ -380,6 +380,10 @@ viewGallery model =
         ]
 
 
+viewRow videos =
+    div [ class "flex " ] (List.map viewCell videos)
+
+
 viewCell vid =
     div
         [ class "tc flex-grow-1 flex-shrink-1"
@@ -406,10 +410,6 @@ viewCell vid =
             [ div [ class "tc ph2" ] [ text vid.title ]
             ]
         ]
-
-
-viewRow videos =
-    div [ class "flex " ] (List.map viewCell videos)
 
 
 viewVideo : Model -> Video -> Html Msg

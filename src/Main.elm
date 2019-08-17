@@ -356,35 +356,35 @@ viewHome model =
 
 viewVideos : Model -> Html Msg
 viewVideos model =
-    let
-        viewVideo : Video -> Html Msg
-        viewVideo video =
-            div []
-                [ div [ class "f3 pv1" ] [ text video.title ]
-                , if model.playingVideo == Just video then
-                    H.video
-                        [ A.id video.id
-                        , class "azuremediaplayer amp-default-skin"
-                        , width 345
-                        , height 184
-                        ]
-                        []
-
-                  else
-                    img
-                        [ src video.imageUrl
-                        , onClick (Play video)
-                        , width 345
-                        , height 184
-                        ]
-                        []
-                , div [] (viewSynopsis video.synopsis)
-                ]
-    in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
+        ]
+
+
+viewVideo : Model -> Video -> Html Msg
+viewVideo model video =
+    div []
+        [ div [ class "f3 pv1" ] [ text video.title ]
+        , if model.playingVideo == Just video then
+            H.video
+                [ A.id video.id
+                , class "azuremediaplayer amp-default-skin"
+                , width 345
+                , height 184
+                ]
+                []
+
+          else
+            img
+                [ src video.imageUrl
+                , onClick (Play video)
+                , width 345
+                , height 184
+                ]
+                []
+        , div [] (viewSynopsis video.synopsis)
         ]
 
 

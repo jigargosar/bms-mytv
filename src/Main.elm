@@ -15,6 +15,7 @@ import Html.Parser.Util
 import Html.Styled as H exposing (Html, div, img, p, text, video)
 import Html.Styled.Attributes as A exposing (class, css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Keyed as K
 import Html.Styled.Lazy exposing (lazy)
 import Http
 import Json.Decode as JD exposing (Decoder)
@@ -315,18 +316,22 @@ viewGallery model =
 
 viewRows : Model -> List (List Video) -> Html Msg
 viewRows model groupedVideos =
-    div [ class "flex flex-column items-center" ]
-        (groupedVideos |> List.concatMap (viewRow model))
+    K.node "div"
+        [ class "flex flex-column items-center" ]
+        (groupedVideos
+            |> List.indexedMap (viewRow model)
+            |> List.concat
+        )
 
 
-viewRow : Model -> List Video -> List (Html Msg)
-viewRow model videos =
+viewRow : Model -> Int -> List Video -> List ( String, Html Msg )
+viewRow model rowIdx videos =
     let
         playingRow =
             playingVideoInList model videos
                 |> Maybe.Extra.unwrap [] viewPlayingRow
     in
-    playingRow ++ [ div [ class "flex " ] (List.map viewCell videos) ]
+    playingRow ++ [ ( String.fromInt rowIdx, div [ class "flex " ] (List.map viewCell videos) ) ]
 
 
 playingVideoInList model videos =
@@ -341,20 +346,24 @@ playingVideoInList model videos =
             )
 
 
+viewPlayingRow : Video -> List ( String, Html Msg )
 viewPlayingRow video =
-    [ div [ class "flex w-100" ]
-        [ div [ class "w-60 relative" ]
-            [ div [ A.id video.id ] []
+    [ ( video.id
+      , div [ class "flex w-100" ]
+            [ div [ class "w-60 relative" ]
+                [ div [ A.id video.id ] []
 
-            --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
+                --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
+                ]
+            , div
+                [ class "w-40 flex flex-column"
+                , css [{- Css.height <| px 200 -}]
+                ]
+                [ div [] [ text video.title ]
+                , div [ class "" ] (viewSynopsis video.synopsis)
+                ]
             ]
-        , div
-            [ class "w-30"
-            , css [ Css.height <| px 200 ]
-            ]
-            [ p [] [ text "some synopsis text" ]
-            ]
-        ]
+      )
     ]
 
 

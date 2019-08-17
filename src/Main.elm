@@ -286,10 +286,6 @@ viewRoute route model =
             viewRoute Route.Home model
 
 
-imageUrl num =
-    "img" ++ String.fromInt num ++ ".jpg"
-
-
 viewHome : Model -> StyledDocument Msg
 viewHome model =
     { title = "Movie Trailers"

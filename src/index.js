@@ -13,6 +13,7 @@ const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
   flags: {
     cache: JSON.parse(localStorage.getItem(storageKey) || 'null'),
+    size: {width:window.innerWidth, height:window.innerHeight}
   },
 })
 

@@ -378,7 +378,7 @@ viewGallery model =
         ]
 
 
-viewRows : Model -> List (List Video) -> Html msg
+viewRows : Model -> List (List Video) -> Html Msg
 viewRows model groupedVideos =
     div [ class "flex flex-column items-center" ]
         (groupedVideos |> List.concatMap (viewRow model))
@@ -396,7 +396,7 @@ playingVideoInList model videos =
             )
 
 
-viewRow : Model -> List Video -> List (Html msg)
+viewRow : Model -> List Video -> List (Html Msg)
 viewRow model videos =
     let
         playingRow =
@@ -419,6 +419,7 @@ viewCell vid =
             ]
 
         --                , class "flex flex-column"
+        , onClick <| Play vid
         ]
         [ div
             [ css []
@@ -489,7 +490,7 @@ viewThumb pv video =
 --https://github.com/elm/html/issues/172#issuecomment-417891199
 
 
-viewSynopsis : String -> List (Html msg)
+viewSynopsis : String -> List (Html Msg)
 viewSynopsis synopsis =
     Html.Parser.run synopsis
         |> Result.Extra.unpack (\_ -> [ text "" ])

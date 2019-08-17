@@ -277,10 +277,10 @@ viewRoute : Route -> Model -> StyledDocument Msg
 viewRoute route model =
     case route of
         Route.NotFound _ ->
-            viewRoute Route.Root model
+            viewRoute Route.Home model
 
-        Route.Root ->
-            viewRoot model
+        Route.Home ->
+            viewHome model
 
         Route.Mock ->
             viewMock model
@@ -343,8 +343,8 @@ viewMockGrid model =
         ]
 
 
-viewRoot : Model -> StyledDocument Msg
-viewRoot model =
+viewHome : Model -> StyledDocument Msg
+viewHome model =
     { title = "Movie Trailers"
     , body =
         [ HasErrors.detailView model

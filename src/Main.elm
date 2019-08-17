@@ -381,12 +381,33 @@ viewGallery model =
 viewRows : Model -> List (List Video) -> Html msg
 viewRows model groupedVideos =
     div [ class "flex flex-column items-center" ]
-        (groupedVideos |> List.map (viewRow model))
+        (groupedVideos |> List.concatMap (viewRow model))
 
 
-viewRow : Model -> List Video -> Html msg
+playingVideoInList model videos =
+    model.playingVideo
+        |> Maybe.andThen
+            (\v ->
+                if List.member v videos then
+                    Just v
+
+                else
+                    Nothing
+            )
+
+
+viewRow : Model -> List Video -> List (Html msg)
 viewRow model videos =
-    div [ class "flex " ] (List.map viewCell videos)
+    let
+        playingRow =
+            playingVideoInList model videos
+                |> Maybe.Extra.unwrap [] viewPlayingRow
+    in
+    playingRow ++ [ div [ class "flex " ] (List.map viewCell videos) ]
+
+
+viewPlayingRow video =
+    [ div [] [ text "playing video" ] ]
 
 
 viewCell vid =

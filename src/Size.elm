@@ -1,4 +1,4 @@
-module Size exposing (Size, decoder, encoder, fromViewport, initial, onBrowserResize)
+module Size exposing (Size, decoder, encoder, fromViewport, onBrowserResize, zero)
 
 import Browser.Events
 import Json.Decode as JD exposing (Decoder)
@@ -10,8 +10,8 @@ type alias Size =
     { width : Int, height : Int }
 
 
-initial : Size
-initial =
+zero : Size
+zero =
     { width = 0, height = 0 }
 
 

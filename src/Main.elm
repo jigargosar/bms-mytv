@@ -26,6 +26,7 @@ import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
 import Route exposing (Route)
+import Size exposing (Size)
 import UpdateExtra exposing (andThen, command, pure)
 import Url exposing (Url)
 import Video exposing (Video)
@@ -46,6 +47,7 @@ videoListDecoder =
 type alias Model =
     { errors : Errors
     , key : Nav.Key
+    , size : Size
     , route : Route
     , dataStr : String
     , videos : List Video
@@ -59,6 +61,7 @@ type alias Cache =
 
 type alias Flags =
     { cache : Cache
+    , size : Size
     }
 
 
@@ -87,6 +90,12 @@ flagsDecoder : Decoder Flags
 flagsDecoder =
     JD.succeed Flags
         |> JDP.required "cache" cacheDecoder
+        |> JDP.required "size" Size.decoder
+
+
+setSize : a -> { b | size : a } -> { b | size : a }
+setSize size model =
+    { model | size = size }
 
 
 formatAndSetEncodedData : Value -> Model -> Model
@@ -117,6 +126,7 @@ init encodedFlags url key =
         model =
             { errors = Errors.fromStrings []
             , key = key
+            , size = Size.zero
             , route = route
             , dataStr = ""
             , videos = []
@@ -144,6 +154,7 @@ type Msg
     = NoOp
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
+    | OnResize Size
     | GotData (Result Http.Error Value)
     | Play Video
 
@@ -155,7 +166,7 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        []
+        [ Size.onBrowserResize OnResize ]
 
 
 
@@ -186,6 +197,9 @@ update message model =
                     Route.fromUrl url
             in
             ( { model | route = route }, Cmd.none )
+
+        OnResize size ->
+            pure { model | size = size }
 
         GotData res ->
             res
@@ -223,6 +237,7 @@ cacheEffect model =
 updateFromFlags : Flags -> Model -> Return
 updateFromFlags flags model =
     model
+        |> setSize flags.size
         |> setModelFromCache flags.cache
         |> pure
 

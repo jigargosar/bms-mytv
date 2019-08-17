@@ -3,7 +3,7 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
-import Css exposing (auto, ellipsis, flexBasis, fontSize, hidden, int, lineHeight, maxHeight, maxWidth, num, overflow, pct, px, rem, textOverflow, zero)
+import Css exposing (auto, display, ellipsis, flexBasis, fontSize, hidden, int, lineHeight, maxHeight, maxWidth, none, num, overflow, pct, px, rem, textOverflow, zero)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
@@ -22,6 +22,7 @@ import Http
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
+import List.Extra
 import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
@@ -354,10 +355,41 @@ viewHome model =
     }
 
 
+lh0 =
+    lineHeight zero
+
+
 viewGallery : Model -> Html Msg
 viewGallery model =
+    let
+        thumbsPerRow =
+            model.size.width // 250
+
+        viewCell vid =
+            div
+                [ class "flex-grow-1 flex-shrink-1 flex items-center justify-center"
+                , css [ lh0, flexBasis (px 0) ]
+                ]
+                [ img
+                    [ src vid.imageUrl
+                    , css [ lh0 ]
+                    ]
+                    []
+                ]
+
+        viewRow vids =
+            div [ class "flex" ] (List.map viewCell vids)
+
+        viewRows =
+            div []
+                (model.videos
+                    |> List.Extra.groupsOf thumbsPerRow
+                    |> List.map viewRow
+                )
+    in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
+        , viewRows
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
         ]
@@ -395,14 +427,16 @@ viewThumb pv video =
     in
     div
         [ class "pa3"
-        , classList [ ( "mt4", isPlaying ) ]
+
+        --        , classList [ ( "mt4", isPlaying ) ]
         , css [ lineHeight (int 0) ]
         ]
         [ img
             [ src video.imageUrl
-            , onClick (Play video)
-            , width 345
-            , height 184
+
+            --            , onClick (Play video)
+            --            , width 345
+            --            , height 184
             ]
             []
         ]

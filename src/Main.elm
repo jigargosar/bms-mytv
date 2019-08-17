@@ -1,10 +1,10 @@
 module Main exposing (main)
 
-import BasicsExtra exposing (callWith)
+import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
-import Css exposing (flexBasis, fontSize, int, lineHeight, maxWidth, none, num, pct, pointerEvents, px, zero)
+import Css exposing (auto, flexBasis, fontSize, hex, int, lineHeight, maxWidth, none, num, outline, outline3, outlineStyle, outset, pct, pointerEvents, px, scale, transform, transforms, zIndex, zero)
 import Css.Functional exposing (lh0)
 import Dict
 import Errors exposing (Errors)
@@ -338,7 +338,7 @@ viewRow model rowIdx videos =
             playingVideoInList model videos
                 |> Maybe.Extra.unwrap [] (viewPlayingRow model)
     in
-    playingRow ++ [ ( String.fromInt rowIdx, div [ class "flex " ] (List.map viewCell videos) ) ]
+    playingRow ++ [ ( String.fromInt rowIdx, div [ class "flex " ] (List.map (viewCell model) videos) ) ]
 
 
 playingVideoInList model videos =
@@ -371,16 +371,21 @@ viewPlayingRow model video =
     in
     [ ( video.id
       , div
-            [ class "flex w-100 bg-black-40 relative"
-            , css [{- Css.marginBottom zero -}]
+            [ class "flex w-100 relative "
+            , css [ Css.marginBottom zero ]
+
+            --            , style "background-color" "#3a434c"
+            --            , style "background-color" "#282f35"
+            --            , style "background-color" "#1c2125"
+            , style "background-color" "#14171a"
             ]
             [ div
-                [ class "absolute bottom-0 top-0 w-100 z-5"
+                [ class "absolute absolute--fill  w-100 z-1"
                 , style "box-shadow" "inset 0 0 8px 4px rgba(0,0,0,1)"
                 , css [ pointerEvents none ]
                 ]
                 []
-            , div [ class "w-60 bg-black-30" ]
+            , div [ class "w-60 _bg-black-30" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
                 ]
             , div
@@ -398,11 +403,30 @@ viewPlayingRow model video =
     ]
 
 
-viewCell vid =
+viewCell model vid =
+    let
+        isSel =
+            model.playingVideo
+                |> Maybe.Extra.unwrap False (eq_ vid)
+    in
     div
         [ class "flex-grow-1 flex-shrink-1 relative"
+        , style "box-shadow"
+            (if isSel then
+                "inset 0 0 1px 1px white"
+
+             else
+                "none"
+            )
         , css
             [ flexBasis (px 0)
+            , Css.batch
+                (if isSel then
+                    []
+
+                 else
+                    []
+                )
 
             --            , maxWidth <| px 250
             ]

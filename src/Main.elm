@@ -368,17 +368,18 @@ viewGallery model =
         groupedVideos =
             model.videos
                 |> List.Extra.groupsOf thumbsPerRow
-
-        viewRows =
-            div [ class "flex flex-column items-center" ]
-                (groupedVideos |> List.map viewRow)
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , viewRows
+        , viewRows groupedVideos
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
         ]
+
+
+viewRows groupedVideos =
+    div [ class "flex flex-column items-center" ]
+        (groupedVideos |> List.map viewRow)
 
 
 viewRow videos =

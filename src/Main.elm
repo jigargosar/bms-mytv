@@ -383,11 +383,12 @@ viewVideos model =
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , div [ class "pa3 flex flex-wrap justify-center" ] (List.map (viewImg model.playingVideo) model.videos)
+        , div [ class "pa3 flex flex-wrap justify-center" ]
+            (List.map (viewThumb model.playingVideo) model.videos)
         ]
 
 
-viewImg pv video =
+viewThumb pv video =
     let
         isPlaying =
             pv == Just video

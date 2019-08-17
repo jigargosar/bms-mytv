@@ -348,14 +348,14 @@ viewHome model =
     { title = "Movie Trailers"
     , body =
         [ HasErrors.detailView model
-        , viewVideos model
+        , viewGallery model
         , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
 
 
-viewVideos : Model -> Html Msg
-viewVideos model =
+viewGallery : Model -> Html Msg
+viewGallery model =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , div [ class "pa3 flex flex-wrap justify-center" ]

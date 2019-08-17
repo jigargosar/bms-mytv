@@ -3,7 +3,7 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith)
 import Browser
 import Browser.Navigation as Nav
-import Css exposing (int, lineHeight, zero)
+import Css exposing (auto, ellipsis, flexBasis, fontSize, hidden, int, lineHeight, maxHeight, maxWidth, num, overflow, pct, px, rem, textOverflow, zero)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
@@ -14,7 +14,7 @@ import Html
 import Html.Attributes as HA
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, div, h1, h3, img, source, text, video)
+import Html.Styled as H exposing (Html, div, h1, h3, img, p, source, text, video)
 import Html.Styled.Attributes as A exposing (class, classList, css, height, href, src, type_, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Lazy exposing (lazy)
@@ -284,14 +284,47 @@ imageUrl num =
     "img" ++ String.fromInt num ++ ".jpg"
 
 
+mockSyn =
+    "Your daily dose of news and gossip is back with Tea And T.V. The Kapil Sharma Show will soon have Vidya Balan</a> and Arjun Rampal as special guests and as usual Kapil didn&#39;t miss a chance to take a dig at Vidya and her obsession with the word &#39;Kahani&#39;, he even suggested Arjun to join politics and he gave a hilarious justification for it.<br /><br />Bigg Boss 10 house has a new captain and she&#39;s none other than VJ Bani, as soon as she became the captain, punishments and arguments followed. Swami Omji is having fun with Monalisa, he&#39;s playing with her in swimming pool and guess what Manoj is getting very jealous. Karan Patel has found the right balance between reel life and real, he recently shared a picture which clearly shows his happiness.<br /><br />Mouni Roy will soon be seen in a hot item song in the film Tum Bin 2 and she has started promoting it well, she has challenged few of her close television friends to show their dancing talent.<br /><br />Comedy Nights Bachao 2 is again in news for all the wrong reasons, after Amruta and Mannan, this season&#39;s host Mona Singh has also been replaced by none other than Bharti. Jhalak Dikhhla Jaa 9 will soon have a children&#39;s day special episode and check out the cuteness and energy of celebs. Jhalak&#39;s favourite Shantanu Maheshwari joined MyTV exclusively to share his childhood memories"
+
+
+mockSynShort =
+    "Your daily dose of news and gossip is back with Tea And T.V. The Kapil Sharma Show will soon have Vidya Balan</a> and Arjun Rampal as special guests and as usual Kapil didn&#39;t miss a chance to take a dig at Vidya and her obsession with the word &#39;Kahani&#39;, he even suggested Arjun to join politics and he gave a hilarious justification for it.<br /><br />Bigg Boss 10 house has a new captain and she&#39;s none other than VJ Bani, as soon as she became the captain, punishments and arguments followed. Swami Omji is having fun with Monalisa, he&#39;s playing with her in swimming pool and guess what Manoj is getting very jealous. Karan Patel has found the right balance between reel life and real, he recently shared a picture which clearly shows his happiness.<br /><br />Mouni Roy will soon be seen in a hot item song in the film Tum Bin 2 and she has started promoting it well, she has challenged few of her close television friends to show their dancing talent.<br /><br />Comedy Nights "
+
+
 viewMockGrid model =
     let
-        viewImage num =
-            div [ css [ lineHeight zero ] ] [ img [ src <| imageUrl num ] [] ]
+        viewImage idxFromOne =
+            div [ css [ lineHeight zero, fontSize (pct 100) ] ] [ img [ src <| imageUrl idxFromOne ] [] ]
     in
-    div []
-        [ div [] [ img [ src <| imageUrl 1 ] [] ]
-        , div [] (List.range 1 4 |> List.map viewImage)
+    div [ class "vs3" ]
+        [ div [ class "flex justify-around" ] [ viewImage 1, viewImage 2 ]
+        , div [ class "flex justify-around" ]
+            [ div [ class "flex items-center justify-center", css [ Css.minWidth (px 377) ] ]
+                [ img
+                    [ src <| imageUrl 4
+                    , class ""
+                    ]
+                    []
+                ]
+            , div [ class "measure", css [] ]
+                [ div [ class "f4 lh-title" ] [ text "Synopsis" ]
+                , div
+                    [ class "f6 lh-copy"
+                    , css
+                        [{- maxHeight (rem 5)
+                            , overflow hidden
+                            , textOverflow ellipsis
+                         -}
+                        ]
+                    ]
+                    [ text <| String.fromList <| List.take 300 <| String.toList mockSynShort
+                    , text "..."
+                    ]
+                ]
+            ]
+        , div [ class "flex justify-around" ] [ viewImage 3, viewImage 4 ]
+        , div [ class "flex justify-around" ] [ viewImage 2, viewImage 1 ]
         ]
 
 

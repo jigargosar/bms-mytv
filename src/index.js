@@ -74,7 +74,7 @@ function playVideo(video) {
     },
     function() {
       console.log('Good to go!')
-      setTimeout(() => myPlayer.dispose(), 1000)
+      // setTimeout(() => myPlayer.dispose(), 1000)
       // add an event listener
       this.addEventListener('ended', function() {
         console.log('Finished!')

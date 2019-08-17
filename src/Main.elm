@@ -406,7 +406,10 @@ viewPlayingRow video =
             lazy ampVideo video.id
     in
     [ div [ class "flex" ]
-        [ div [ A.id video.id, class "w-60" ] []
+        [ div [ class "w-60 relative" ]
+            [ div [ A.id video.id ] []
+            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
+            ]
         , div
             [ class "w-30"
             , css [ Css.height <| px 200 ]

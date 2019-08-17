@@ -322,7 +322,7 @@ viewGallery model =
 viewRows : Model -> List (List Video) -> Html Msg
 viewRows model groupedVideos =
     K.node "div"
-        [ class "flex flex-column _items-center" ]
+        [ class "vs3 flex flex-column _items-center" ]
         (groupedVideos
             |> List.indexedMap (viewRow model)
             |> List.concat
@@ -369,18 +369,20 @@ viewPlayingRow model video =
     in
     [ ( video.id
       , div [ class "flex w-100" ]
-            [ div [ class "w-60 relative bg-black" ]
+            [ div [ class "w-60 relative " ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
 
                 --            , div [ class "absolute absolute--fill bg-white-80 z-1" ] [ text "HWE" ]
                 ]
-            , div
-                [ class "w-40 flex flex-column"
-                , css [ Css.height <| px (vidHeight - 6) ]
-                ]
-                [ div [ class "f4" ] [ text video.title ]
-                , div [ class "f7 overflow-auto lh-copy" ]
-                    [ div [] (viewSynopsis video.synopsis)
+            , div [ class "w-40 ph2 " ]
+                [ div
+                    [ class "flex flex-column"
+                    , css [ Css.height <| px (vidHeight - 6) ]
+                    ]
+                    [ div [ class "f4" ] [ text video.title ]
+                    , div [ class "f7 overflow-hidden lh-copy" ]
+                        [ div [] (viewSynopsis video.synopsis)
+                        ]
                     ]
                 ]
             ]

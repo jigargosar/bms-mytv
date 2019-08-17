@@ -25,6 +25,8 @@ body {
   /* Support for IE. */
   font-feature-settings: 'liga';
   /* shape-rendering: geometricPrecision; */
+  background-color: rgb(45, 45, 45);
+  color: white
 }
 
 svg {

@@ -353,7 +353,7 @@ videoContainerDomId videoId =
 viewPlayingRow : Video -> List ( String, Html Msg )
 viewPlayingRow video =
     [ ( video.id
-      , div [ class "flex w-100" ]
+      , div [ class "flex w-100", css [ Css.height <| px 300 ] ]
             [ div [ class "w-60 relative" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
 
@@ -364,7 +364,7 @@ viewPlayingRow video =
                 , css [{- Css.height <| px 200 -}]
                 ]
                 [ div [] [ text video.title ]
-                , div [ class "" ] (viewSynopsis video.synopsis)
+                , div [ class "overflow-y-auto" ] (viewSynopsis video.synopsis)
                 ]
             ]
       )

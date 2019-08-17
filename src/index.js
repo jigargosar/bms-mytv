@@ -68,7 +68,7 @@ function playVideo(video) {
       controls: true,
       // width: '345',
       width: '100%',
-      // height: '184',
+      height: '300',
       poster: video.imageUrl,
       logo: { enabled: false },
     },

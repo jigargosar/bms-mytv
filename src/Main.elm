@@ -372,25 +372,20 @@ viewGallery model =
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
-        , model.playingVideo
-            |> Maybe.Extra.unpack (\_ -> viewRows groupedVideos)
-                (viewPlayingRows groupedVideos)
+        , viewRows model groupedVideos
         , div [ class "pa3 flex flex-wrap justify-center" ]
             (List.map (viewThumb model.playingVideo) model.videos)
         ]
 
 
-viewRows groupedVideos =
+viewRows : Model -> List (List Video) -> Html msg
+viewRows model groupedVideos =
     div [ class "flex flex-column items-center" ]
-        (groupedVideos |> List.map viewRow)
+        (groupedVideos |> List.map (viewRow model))
 
 
-viewPlayingRows groupedVideos playingVideo =
-    div [ class "flex flex-column items-center" ]
-        (groupedVideos |> List.map viewRow)
-
-
-viewRow videos =
+viewRow : Model -> List Video -> Html msg
+viewRow model videos =
     div [ class "flex " ] (List.map viewCell videos)
 
 

@@ -37,6 +37,15 @@ type alias HttpResult a =
     Result Http.Error a
 
 
+type Msg
+    = FetchNext
+    | OnVideoResponse
+
+
+update msg model =
+    1
+
+
 fetchNextPage : (HttpResult Value -> msg) -> Model -> ( Model, Cmd msg )
 fetchNextPage tagger model =
     case model of

@@ -271,14 +271,6 @@ gotData encodedData =
         >> decodeAndUpdate VideosResponse.decoder handlePagedVideoResponse encodedData
 
 
-
---updateVideos : Value -> Model -> Return
---updateVideos encodedData =
---    decodeAndUpdate videoListDecoder
---        (\videos -> setVideos videos >> pure)
---        encodedData
-
-
 handlePagedVideoResponse : VideosResponse -> Model -> Return
 handlePagedVideoResponse vr model =
     model

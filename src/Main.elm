@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Api
+import ApiUrls
 import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Dom as Dom
@@ -144,7 +144,14 @@ init encodedFlags url key =
     model
         |> pure
         |> andThen (decodeAndUpdate flagsDecoder updateFromFlags encodedFlags)
-        |> command (Api.fetchData GotData)
+        |> command (fetchData GotData)
+
+
+fetchData tagger =
+    Http.get
+        { url = ApiUrls.getVideosPaged 1 30
+        , expect = Http.expectJson tagger JD.value
+        }
 
 
 

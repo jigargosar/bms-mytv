@@ -140,6 +140,7 @@ function initPubs(pubs) {
         return
       }
       if (send) {
+        console.log("sending", arg)
         send(arg)
       }
     }
@@ -158,7 +159,7 @@ setTimeout(()=> {
         // lazyImage.classList.remove("lazy");
         // lazyImageObserver.unobserve(lazyImage);
         console.log('entry',entry)
-        pubs.more()
+        pubs.more("")
       }
     });
   },{rootMargin:"30%"});

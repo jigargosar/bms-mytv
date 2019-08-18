@@ -7,7 +7,7 @@ import Video exposing (Video)
 port play : Video -> Cmd msg
 
 
-port more : (() -> msg) -> Sub msg
+port more : (Value -> msg) -> Sub msg
 
 
 port disposePlayer : () -> Cmd msg

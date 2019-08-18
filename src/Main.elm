@@ -166,7 +166,7 @@ init encodedFlags url key =
 
 
 pageLimit =
-    10
+    20
 
 
 fetchNextPage : Model -> Cmd Msg
@@ -207,7 +207,9 @@ type Msg
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
-        [ Size.onBrowserResize OnResize ]
+        [ Size.onBrowserResize OnResize
+        , Ports.more <| always More
+        ]
 
 
 
@@ -389,6 +391,22 @@ thumbsPerRow model =
     model.size.width // 250
 
 
+thumbAspectRatio : Float
+thumbAspectRatio =
+    -- 345 / 184
+    -- 15 / 8
+    16 / 9
+
+
+thumbHeight : Model -> Float
+thumbHeight model =
+    let
+        cellWidth =
+            toFloat model.size.width / (toFloat <| thumbsPerRow model)
+    in
+    1 / thumbAspectRatio * cellWidth
+
+
 viewGallery : Model -> Html Msg
 viewGallery model =
     let
@@ -551,7 +569,9 @@ viewCell model vid =
             [ img
                 [ src vid.imageUrl
                 , css []
-                , class "w-100"
+
+                --                , class "w-100"
+                , height (thumbHeight model |> round)
                 ]
                 []
             ]

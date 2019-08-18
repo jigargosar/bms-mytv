@@ -115,9 +115,9 @@ formatAndSetEncodedData encoded model =
     { model | dataStr = JE.encode 2 encoded }
 
 
-setVideos : List Video -> Model -> Model
-setVideos videos model =
-    { model | videos = videos }
+appendVideos : List Video -> Model -> Model
+appendVideos videos model =
+    { model | videos = model.videos ++ videos }
 
 
 setPagesFetched : Int -> Model -> Model
@@ -271,7 +271,7 @@ handlePagedVideoResponse : Value -> Model -> Return
 handlePagedVideoResponse encodedData =
     decodeAndUpdate VideosResponse.decoder
         (\vr ->
-            setVideos (vr.videoList |> Video.sort)
+            appendVideos (vr.videoList |> Video.sort)
                 >> setPagesFetched vr.page.current
                 >> pure
         )

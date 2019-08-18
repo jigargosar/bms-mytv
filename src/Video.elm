@@ -10,6 +10,7 @@ type alias Video =
     { id : String
     , title : String
     , subCategory : String
+    , liveDate : String
     , tags : List String
     , synopsis : String
     , videoUrl : String
@@ -29,6 +30,7 @@ videoDecoder =
         |> ds "videoID"
         |> ds "title"
         |> ds "subCategory"
+        |> ds "liveDate"
         |> JDP.required "videoTags" (JD.list JD.string)
         |> ds "synopsis"
         |> ds "videoURL"
@@ -38,11 +40,12 @@ videoDecoder =
 
 
 videoEncoder : Video -> Value
-videoEncoder { id, title, subCategory, tags, synopsis, videoUrl, imageUrl, views, likes } =
+videoEncoder { id, title, subCategory, liveDate, tags, synopsis, videoUrl, imageUrl, views, likes } =
     JE.object
         [ ( "videoID", JE.string id )
         , ( "title", JE.string title )
         , ( "subCategory", JE.string subCategory )
+        , ( "liveDate", JE.string liveDate )
         , ( "videoTags", JE.list JE.string tags )
         , ( "synopsis", JE.string synopsis )
         , ( "videoURL", JE.string videoUrl )
@@ -50,6 +53,10 @@ videoEncoder { id, title, subCategory, tags, synopsis, videoUrl, imageUrl, views
         , ( "views", JE.string views )
         , ( "likes", JE.int likes )
         ]
+
+
+type alias VideoList =
+    List Video
 
 
 listDecoder : Decoder (List Video)
@@ -68,3 +75,7 @@ type alias VideoDict =
 
 dictDecoder =
     JD.dict videoDecoder
+
+
+sort =
+    List.sortBy .liveDate >> List.reverse

@@ -1,8 +1,9 @@
 module VideosResponse exposing (..)
 
+import Dict
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
-import Video exposing (VideoDict)
+import Video exposing (VideoDict, VideoList)
 
 
 type alias Page =
@@ -28,7 +29,7 @@ pageDecoder =
 
 type alias VideosResponse =
     { page : Page
-    , videoDict : VideoDict
+    , videoList : VideoList
     }
 
 
@@ -36,4 +37,5 @@ decoder : Decoder VideosResponse
 decoder =
     JD.succeed VideosResponse
         |> JDP.requiredAt [ "MYTV", "page" ] pageDecoder
-        |> JDP.requiredAt [ "MYTV", "CategoryVideoDetails" ] Video.dictDecoder
+        |> JDP.requiredAt [ "MYTV", "CategoryVideoDetails" ]
+            (Video.dictDecoder |> JD.map Dict.values)

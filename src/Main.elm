@@ -56,7 +56,6 @@ type alias Model =
     , route : Route
     , dataStr : String
     , videos : List Video
-    , videoDict : VideoDict
     , pagesFetched : Int
     , playingVideo : Maybe Video
     }
@@ -64,7 +63,6 @@ type alias Model =
 
 type alias Cache =
     { videos : List Video
-    , videoDict : VideoDict
     }
 
 
@@ -79,8 +77,7 @@ cacheDecoder =
     JD.oneOf
         [ JD.succeed Cache
             |> JDP.optional "videos" Video.listDecoder []
-            |> JDP.optional "videoDict" Video.dictDecoder Dict.empty
-        , JD.null { videos = [], videoDict = Dict.empty }
+        , JD.null { videos = [] }
         ]
 
 
@@ -91,14 +88,13 @@ cacheEncoder { videos } =
 
 
 setModelFromCache : Cache -> Model -> Model
-setModelFromCache { videos, videoDict } model =
-    { model | videos = videos, videoDict = videoDict }
+setModelFromCache { videos } model =
+    { model | videos = videos }
 
 
 cacheFromModel : Model -> Cache
 cacheFromModel model =
     { videos = model.videos
-    , videoDict = model.videoDict
     }
 
 
@@ -122,11 +118,6 @@ formatAndSetEncodedData encoded model =
 setVideos : List Video -> Model -> Model
 setVideos videos model =
     { model | videos = videos }
-
-
-mergeVideos : VideoDict -> Model -> Model
-mergeVideos videoDict model =
-    { model | videoDict = videoDict }
 
 
 setPagesFetched : Int -> Model -> Model
@@ -156,7 +147,6 @@ init encodedFlags url key =
             , route = route
             , dataStr = ""
             , videos = []
-            , videoDict = Dict.empty
             , pagesFetched = 0
             , playingVideo = Nothing
             }
@@ -280,7 +270,11 @@ gotData encodedData =
 handlePagedVideoResponse : Value -> Model -> Return
 handlePagedVideoResponse encodedData =
     decodeAndUpdate VideosResponse.decoder
-        (\vr -> mergeVideos vr.videoDict >> setPagesFetched vr.page.current >> pure)
+        (\vr ->
+            setVideos (vr.videoList |> Video.sort)
+                >> setPagesFetched vr.page.current
+                >> pure
+        )
         encodedData
         >> effect cacheEffect
 
@@ -371,6 +365,10 @@ viewData model =
     }
 
 
+getDisplayVideosList model =
+    model.videos
+
+
 viewGallery : Model -> Html Msg
 viewGallery model =
     let
@@ -378,7 +376,7 @@ viewGallery model =
             model.size.width // 250
 
         groupedVideos =
-            model.videos
+            getDisplayVideosList model
                 |> List.Extra.groupsOf thumbsPerRow
     in
     div []

@@ -13,17 +13,10 @@ import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
-type Model
+type PagedLoader
     = LoadingFirstPage
     | Loaded Int Int
     | Loading Int Int
-
-
-type alias PagedLoader =
-    --    { pagesFetched : Int
-    --    , totalPages : Int
-    --    }
-    Model
 
 
 init : (HttpResult Value -> msg) -> ( PagedLoader, Cmd msg )

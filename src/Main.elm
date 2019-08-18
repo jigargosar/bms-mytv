@@ -70,8 +70,11 @@ type alias Flags =
 
 cacheDecoder : Decoder Cache
 cacheDecoder =
-    JD.succeed Cache
-        |> JDP.custom (JD.oneOf [ JD.field "videos" Video.listDecoder ])
+    JD.oneOf
+        [ JD.succeed Cache
+            |> JDP.required "videos" Video.listDecoder
+        , JD.null { videos = [] }
+        ]
 
 
 cacheEncoder : Cache -> Value

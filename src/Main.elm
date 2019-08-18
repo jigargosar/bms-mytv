@@ -24,6 +24,7 @@ import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
 import List.Extra
 import Maybe.Extra
+import PagedLoader
 import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
@@ -155,20 +156,9 @@ init encodedFlags url key =
         |> effect fetchNextPage
 
 
-pageLimit =
-    20
-
-
 fetchNextPage : Model -> Cmd Msg
-fetchNextPage model =
-    if model.totalPages == model.pagesFetched then
-        Cmd.none
-
-    else
-        Http.get
-            { url = ApiUrls.getVideosPaged (model.pagesFetched + 1) pageLimit
-            , expect = Http.expectJson GotData JD.value
-            }
+fetchNextPage =
+    PagedLoader.fetchNextPage GotData
 
 
 type alias HttpResult a =

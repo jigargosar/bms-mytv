@@ -32,7 +32,7 @@ init tagger =
         model =
             LoadingFirstPage
     in
-    ( model, fetchNextPage tagger model )
+    ( model, fetchPageNum tagger 1 )
 
 
 pageLimit =
@@ -57,10 +57,14 @@ fetchNextPage tagger model =
                 Cmd.none
 
             else
-                Http.get
-                    { url = ApiUrls.getVideosPaged (pagesFetched + 1) pageLimit
-                    , expect = Http.expectJson tagger JD.value
-                    }
+                fetchPageNum tagger <| pagesFetched + 1
+
+
+fetchPageNum tagger n =
+    Http.get
+        { url = ApiUrls.getVideosPaged n pageLimit
+        , expect = Http.expectJson tagger JD.value
+        }
 
 
 updateFromVR : VideosResponse -> PagedLoader -> Maybe ( VideoList, PagedLoader )

@@ -1,4 +1,8 @@
-module PagedLoader exposing (..)
+module PagedLoader exposing
+    ( PagedLoader
+    , fetchNextPage
+    , updateFromVR
+    )
 
 import ApiUrls
 import Http

@@ -391,8 +391,11 @@ thumbsPerRow model =
 viewGallery : Model -> Html Msg
 viewGallery model =
     let
-        groupedVideos =
+        displayVideos =
             getDisplayVideosList model
+
+        groupedVideos =
+            displayVideos
                 |> List.Extra.greedyGroupsOf (thumbsPerRow model)
     in
     div []

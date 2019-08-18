@@ -159,12 +159,12 @@ updateFromVRIfPageNumEq :
 updateFromVRIfPageNumEq config pageNum vr model =
     if vr.page.current == pageNum then
         ( initLoadedStateFromVR vr
-        , cmdFromMsg <| config.onVideos (vr.videoList |> Video.sort)
+        , msgToCmd <| config.onVideos (vr.videoList |> Video.sort)
         )
 
     else
         pure model
 
 
-cmdFromMsg msg =
+msgToCmd msg =
     Task.succeed identity |> Task.perform (always msg)

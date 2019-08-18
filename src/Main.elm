@@ -155,9 +155,12 @@ init encodedFlags url key =
         |> command plCmd
 
 
-fetchNextPage : Model -> Cmd Msg
-fetchNextPage =
-    .pagedLoader >> PagedLoader.fetchNextPage GotData
+fetchNextPage : Model -> Return
+fetchNextPage model =
+    model
+        |> .pagedLoader
+        >> PagedLoader.fetchNextPage GotData
+        >> Tuple.mapFirst (\pl -> setPagedLoader pl model)
 
 
 type alias HttpResult a =
@@ -243,7 +246,7 @@ update message model =
             )
 
         More ->
-            pure model |> effect fetchNextPage
+            fetchNextPage model
 
 
 httpError _ model =

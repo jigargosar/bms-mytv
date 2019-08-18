@@ -75,10 +75,15 @@ type alias Flags =
 
 cacheDecoder : Decoder Cache
 cacheDecoder =
+    let
+        initCache =
+            { videos = [] }
+    in
     JD.oneOf
         [ JD.succeed Cache
             |> JDP.optional "videos" Video.listDecoder []
-        , JD.null { videos = [] }
+        , JD.null initCache
+        , JD.succeed initCache
         ]
 
 

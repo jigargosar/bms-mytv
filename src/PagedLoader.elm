@@ -9,6 +9,9 @@ import ApiUrls
 import Http
 import Json.Decode as JD
 import Json.Encode exposing (Value)
+import Maybe.Extra
+import Task
+import UpdateExtra exposing (pure)
 import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
@@ -47,11 +50,67 @@ type alias HttpResult a =
 
 type Msg
     = FetchNext
-    | OnVideoResponse
+    | OnVideoResponse VideosResponse
 
 
-update msg model =
-    1
+type alias Config msg =
+    { onHttpResult : HttpResult Value -> msg
+    , onVideos : VideoList -> msg
+    }
+
+
+update : Config msg -> Msg -> Model -> ( Model, Cmd msg )
+update config message model =
+    case message of
+        FetchNext ->
+            fetchNextPage config.onHttpResult model
+
+        OnVideoResponse vr ->
+            case model of
+                LoadingFirstPage ->
+                    let
+                        cmd : msg
+                        cmd =
+                            config.onVideos (vr.videoList |> Video.sort)
+                    in
+                    if vr.page.current == 1 then
+                        ( initLoadedStateFromVR vr
+                        , Task.succeed identity |> Task.perform (always cmd)
+                        )
+
+                    else
+                        pure model
+
+                Loading loading ->
+                    let
+                        cmd : msg
+                        cmd =
+                            config.onVideos (vr.videoList |> Video.sort)
+                    in
+                    if vr.page.current == loading.pageNum then
+                        ( initLoadedStateFromVR vr
+                        , Task.succeed identity |> Task.perform (always cmd)
+                        )
+
+                    else
+                        pure model
+
+                LoadingThenFetchNext loading ->
+                    let
+                        cmd : msg
+                        cmd =
+                            config.onVideos (vr.videoList |> Video.sort)
+                    in
+                    if vr.page.current == loading.pageNum then
+                        ( initLoadedStateFromVR vr
+                        , Task.succeed identity |> Task.perform (always cmd)
+                        )
+
+                    else
+                        pure model
+
+                Loaded _ ->
+                    pure model
 
 
 fetchNextPage : (HttpResult Value -> msg) -> Model -> ( Model, Cmd msg )

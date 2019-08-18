@@ -7,7 +7,9 @@ import {
   mapObjIndexed,
   path,
   propOr,
+  identity
 } from 'ramda'
+
 
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
@@ -17,7 +19,7 @@ const app = Elm.Main.init({
   },
 })
 
-const pubs = initPubs({})
+const pubs = initPubs({more:identity})
 
 initSubs({
   localStorageSetJsonItem: ([k, v]) => {
@@ -156,6 +158,7 @@ setTimeout(()=> {
         // lazyImage.classList.remove("lazy");
         // lazyImageObserver.unobserve(lazyImage);
         console.log('entry',entry)
+        pubs.more()
       }
     });
   },{rootMargin:"30%"});

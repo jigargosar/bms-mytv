@@ -1,29 +1,13 @@
-port module Ports exposing
-    ( FirestoreQueryResponse
-    , addFirestoreDoc
-    , changeTodoTitle
-    , deleteFirestoreDoc
-    , disposeFirestoreQuery
-    , disposePlayer
-    , localStorageSetJsonItem
-    , localStorageSetStringItem
-    , onAuthStateChanged
-    , onFirestoreQueryResponse
-    , onTodoListChanged
-    , persistTodoList
-    , play
-    , queryFirestore
-    , setCache
-    , signIn
-    , signOut
-    , updateFirestoreDoc
-    )
+port module Ports exposing (..)
 
 import Json.Encode exposing (Value)
 import Video exposing (Video)
 
 
 port play : Video -> Cmd msg
+
+
+port more : (() -> msg) -> Sub msg
 
 
 port disposePlayer : () -> Cmd msg

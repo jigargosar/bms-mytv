@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Api
 import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Dom as Dom
@@ -143,14 +144,7 @@ init encodedFlags url key =
     model
         |> pure
         |> andThen (decodeAndUpdate flagsDecoder updateFromFlags encodedFlags)
-        |> command fetchData
-
-
-fetchData =
-    Http.get
-        { url = "https://cors-anywhere.herokuapp.com/https://in.bookmyshow.com/serv/getData?cmd=GETVIDEOS&category=MYTV&pageNumber=1&pageLimit=30"
-        , expect = Http.expectJson GotData JD.value
-        }
+        |> command (Api.fetchData GotData)
 
 
 

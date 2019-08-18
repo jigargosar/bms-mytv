@@ -33,7 +33,7 @@ import Route exposing (Route)
 import Size exposing (Size)
 import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
-import Video exposing (Video)
+import Video exposing (Video, VideoDict)
 import VideosResponse exposing (VideosResponse)
 
 
@@ -56,12 +56,16 @@ type alias Model =
     , route : Route
     , dataStr : String
     , videos : List Video
+    , videoDict : VideoDict
+    , pagesFetched : Int
     , playingVideo : Maybe Video
     }
 
 
 type alias Cache =
-    { videos : List Video }
+    { videos : List Video
+    , videoDict : VideoDict
+    }
 
 
 type alias Flags =
@@ -74,8 +78,9 @@ cacheDecoder : Decoder Cache
 cacheDecoder =
     JD.oneOf
         [ JD.succeed Cache
-            |> JDP.required "videos" Video.listDecoder
-        , JD.null { videos = [] }
+            |> JDP.optional "videos" Video.listDecoder []
+            |> JDP.optional "videoDict" Video.dictDecoder Dict.empty
+        , JD.null { videos = [], videoDict = Dict.empty }
         ]
 
 
@@ -86,13 +91,15 @@ cacheEncoder { videos } =
 
 
 setModelFromCache : Cache -> Model -> Model
-setModelFromCache { videos } model =
-    { model | videos = videos }
+setModelFromCache { videos, videoDict } model =
+    { model | videos = videos, videoDict = videoDict }
 
 
 cacheFromModel : Model -> Cache
 cacheFromModel model =
-    { videos = model.videos }
+    { videos = model.videos
+    , videoDict = model.videoDict
+    }
 
 
 flagsDecoder : Decoder Flags
@@ -117,6 +124,16 @@ setVideos videos model =
     { model | videos = videos }
 
 
+mergeVideos : VideoDict -> Model -> Model
+mergeVideos videoDict model =
+    { model | videoDict = videoDict }
+
+
+setPagesFetched : Int -> Model -> Model
+setPagesFetched pagesFetched model =
+    { model | pagesFetched = pagesFetched }
+
+
 
 -- INIT
 
@@ -139,6 +156,8 @@ init encodedFlags url key =
             , route = route
             , dataStr = ""
             , videos = []
+            , videoDict = Dict.empty
+            , pagesFetched = 0
             , playingVideo = Nothing
             }
     in
@@ -245,19 +264,24 @@ httpError _ model =
 
 
 gotData : Value -> Model -> Return
-gotData encodedData model =
-    updateResponseForDebug encodedData model
-        |> andThen
-            (decodeAndUpdate videoListDecoder
-                (\videos -> setVideos videos >> pure)
-                encodedData
-            )
-
-
-updateResponseForDebug : Value -> Model -> Return
-updateResponseForDebug encodedData =
+gotData encodedData =
     formatAndSetEncodedData encodedData
-        >> pure
+        >> handlePagedVideoResponse encodedData
+
+
+
+--updateVideos : Value -> Model -> Return
+--updateVideos encodedData =
+--    decodeAndUpdate videoListDecoder
+--        (\videos -> setVideos videos >> pure)
+--        encodedData
+
+
+handlePagedVideoResponse : Value -> Model -> Return
+handlePagedVideoResponse encodedData =
+    decodeAndUpdate VideosResponse.decoder
+        (\vr -> mergeVideos vr.videoDict >> setPagesFetched vr.page.current >> pure)
+        encodedData
         >> effect cacheEffect
 
 

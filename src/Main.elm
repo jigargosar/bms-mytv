@@ -6,8 +6,6 @@ import Browser.Navigation as Nav
 import Css exposing (flexBasis, none, pointerEvents, px)
 import Css.Functional exposing (..)
 import Errors exposing (Errors)
-import FontAwesome.Attributes
-import FontAwesome.Icon as FAIcon
 import FontAwesome.Styles
 import HasErrors
 import Html.Parser
@@ -22,7 +20,7 @@ import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
 import List.Extra
 import Maybe.Extra
-import PagedLoader exposing (PagedLoader)
+import PagedLoader
 import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
@@ -45,7 +43,7 @@ type alias Model =
     , route : Route
     , dataStr : String
     , videos : List Video
-    , pagedLoader : PagedLoader
+    , pagedLoader : PagedLoader.Model
     , playingVideo : Maybe Video
     }
 
@@ -571,21 +569,9 @@ viewSynopsis synopsis =
     Html.Parser.run synopsis
         |> Result.Extra.unpack (\_ -> [ text "" ])
             (removeTopLevelParagraphTag
-                --                >> List.Extra.takeWhile (isBrTag >> not)
                 >> Html.Parser.Util.toVirtualDom
                 >> List.map H.fromUnstyled
             )
-
-
-
---isBrTag node =
---    case node of
---        Html.Parser.Element "br" _ _ ->
---            True
---
---        _ ->
---            False
---
 
 
 removeTopLevelParagraphTag list =
@@ -598,17 +584,6 @@ removeTopLevelParagraphTag list =
 
 
 
---faBtn : msg -> FAIcon.Icon -> Html msg
---faBtn clickHandler icon =
---    div
---        [ class "gray hover-dark-gray pointer"
---        , onClick clickHandler
---        ]
---        [ icon
---            |> FAIcon.viewStyled [ FontAwesome.Attributes.lg ]
---            |> H.fromUnstyled
---        ]
---
 -- MAIN
 
 

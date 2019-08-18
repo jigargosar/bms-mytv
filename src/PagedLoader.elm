@@ -1,5 +1,5 @@
 module PagedLoader exposing
-    ( PagedLoader
+    ( Model
     , fetchNextPage
     , init
     , updateFromVR
@@ -13,14 +13,14 @@ import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
-type PagedLoader
+type Model
     = LoadingFirstPage
     | Loading Int
     | LoadingThenFetchNext Int
     | Loaded Int Int
 
 
-init : (HttpResult Value -> msg) -> ( PagedLoader, Cmd msg )
+init : (HttpResult Value -> msg) -> ( Model, Cmd msg )
 init tagger =
     let
         model =
@@ -37,7 +37,7 @@ type alias HttpResult a =
     Result Http.Error a
 
 
-fetchNextPage : (HttpResult Value -> msg) -> PagedLoader -> ( PagedLoader, Cmd msg )
+fetchNextPage : (HttpResult Value -> msg) -> Model -> ( Model, Cmd msg )
 fetchNextPage tagger model =
     case model of
         LoadingFirstPage ->
@@ -68,7 +68,7 @@ fetchPageNum tagger n =
         }
 
 
-updateFromVR : VideosResponse -> PagedLoader -> Maybe ( VideoList, PagedLoader )
+updateFromVR : VideosResponse -> Model -> Maybe ( VideoList, Model )
 updateFromVR vr model =
     case model of
         LoadingFirstPage ->

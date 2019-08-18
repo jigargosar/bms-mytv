@@ -13,10 +13,14 @@ import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
+type alias LoadingRecord =
+    { pageNum : Int, totalPages : Int }
+
+
 type Model
     = LoadingFirstPage
-    | Loading Int
-    | LoadingThenFetchNext Int
+    | Loading LoadingRecord
+    | LoadingThenFetchNext LoadingRecord
     | Loaded Int Int
 
 
@@ -67,7 +71,7 @@ fetchNextPage tagger model =
                     loadPageNum =
                         pagesFetched + 1
                 in
-                ( Loading loadPageNum, fetchPageNum tagger <| pagesFetched + 1 )
+                ( Loading { pageNum = loadPageNum, totalPages = totalPages }, fetchPageNum tagger <| pagesFetched + 1 )
 
 
 fetchPageNum tagger n =
@@ -87,11 +91,11 @@ updateFromVR vr model =
             else
                 Nothing
 
-        Loading pageNum ->
-            updateFromVRIfPageNumEq pageNum vr
+        Loading loading ->
+            updateFromVRIfPageNumEq loading.pageNum vr
 
-        LoadingThenFetchNext pageNum ->
-            updateFromVRIfPageNumEq pageNum vr
+        LoadingThenFetchNext loading ->
+            updateFromVRIfPageNumEq loading.pageNum vr
 
         Loaded _ _ ->
             Nothing

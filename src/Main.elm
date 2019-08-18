@@ -14,7 +14,7 @@ import FontAwesome.Styles
 import HasErrors
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, div, img, p, text, video)
+import Html.Styled as H exposing (Html, button, div, img, p, text, video)
 import Html.Styled.Attributes as A exposing (class, css, height, href, src, style, width)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as K
@@ -160,6 +160,7 @@ type Msg
     | OnResize Size
     | GotData (Result Http.Error Value)
     | Play Video
+    | Close
 
 
 
@@ -213,6 +214,13 @@ update message model =
             ( { model | playingVideo = Just video }
             , Cmd.batch
                 [ Ports.play video
+                ]
+            )
+
+        Close ->
+            ( { model | playingVideo = Nothing }
+            , Cmd.batch
+                [ Ports.disposePlayer ()
                 ]
             )
 
@@ -380,7 +388,7 @@ viewPlayingRow model video =
             , style "background-color" "#14171a"
             ]
             [ div
-                [ class "absolute absolute--fill  w-100 z-1"
+                [ class "absolute absolute--fill  w-100 z-999"
                 , style "box-shadow" "inset 0 0 8px 4px rgba(0,0,0,1)"
                 , css [ pointerEvents none ]
                 ]
@@ -393,6 +401,7 @@ viewPlayingRow model video =
                 , css [ Css.height <| px (vidHeight - 6) ]
                 ]
                 [ div [ class "f4 lh-title" ] [ text video.title ]
+                , button [ onClick Close ] [ text "close" ]
                 , div [ class "flex" ] [ text video.subCategory ]
                 , div [ class "f7 overflow-hidden lh-copy " ]
                     [ div [] (viewSynopsis video.synopsis)

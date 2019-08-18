@@ -36,13 +36,20 @@ initSubs({
   play: video => {
     requestAnimationFrame(() => playVideo(video))
   },
+  disposePlayer
 })
 
 let myPlayer = null
-function playVideo(video) {
+
+function disposePlayer() {
   if (myPlayer) {
     myPlayer.dispose()
+    myPlayer = null
   }
+}
+
+function playVideo(video) {
+  disposePlayer()
   let videoContainerID = video.id
   let videoContainer = document.getElementById(videoContainerID)
   if (!videoContainer) {

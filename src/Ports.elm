@@ -4,6 +4,7 @@ port module Ports exposing
     , changeTodoTitle
     , deleteFirestoreDoc
     , disposeFirestoreQuery
+    , disposePlayer
     , localStorageSetJsonItem
     , localStorageSetStringItem
     , onAuthStateChanged
@@ -23,6 +24,9 @@ import Video exposing (Video)
 
 
 port play : Video -> Cmd msg
+
+
+port disposePlayer : () -> Cmd msg
 
 
 port localStorageSetStringItem : ( String, String ) -> Cmd msg

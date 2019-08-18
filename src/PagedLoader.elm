@@ -1,7 +1,9 @@
 module PagedLoader exposing
     ( Model
+    , Msg
     , fetchNextPage
     , init
+    , update
     , updateFromVR
     )
 

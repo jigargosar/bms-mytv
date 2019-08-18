@@ -13,17 +13,24 @@ import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
+type Model
+    = LoadingFirstPage
+    | Loaded Int Int
+    | Loading Int Int
+
+
 type alias PagedLoader =
-    { pagesFetched : Int
-    , totalPages : Int
-    }
+    --    { pagesFetched : Int
+    --    , totalPages : Int
+    --    }
+    Model
 
 
 init : (HttpResult Value -> msg) -> ( PagedLoader, Cmd msg )
 init tagger =
     let
         model =
-            { pagesFetched = 0, totalPages = -1 }
+            LoadingFirstPage
     in
     ( model, fetchNextPage tagger model )
 
@@ -38,26 +45,40 @@ type alias HttpResult a =
 
 fetchNextPage : (HttpResult Value -> msg) -> PagedLoader -> Cmd msg
 fetchNextPage tagger model =
-    if model.totalPages == model.pagesFetched then
-        Cmd.none
+    case model of
+        LoadingFirstPage ->
+            Cmd.none
 
-    else
-        Http.get
-            { url = ApiUrls.getVideosPaged (model.pagesFetched + 1) pageLimit
-            , expect = Http.expectJson tagger JD.value
-            }
+        Loading _ _ ->
+            Cmd.none
 
+        Loaded pagesFetched totalPages ->
+            if pagesFetched == totalPages then
+                Cmd.none
 
-setPagesFetched : a -> { b | pagesFetched : a } -> { b | pagesFetched : a }
-setPagesFetched pagesFetched model =
-    { model | pagesFetched = pagesFetched }
+            else
+                Http.get
+                    { url = ApiUrls.getVideosPaged (pagesFetched + 1) pageLimit
+                    , expect = Http.expectJson tagger JD.value
+                    }
 
 
 updateFromVR : VideosResponse -> PagedLoader -> Maybe ( VideoList, PagedLoader )
 updateFromVR vr model =
-    if model.pagesFetched + 1 == vr.page.current then
-        ( vr.videoList |> Video.sort, setPagesFetched vr.page.current model )
-            |> Just
+    case model of
+        LoadingFirstPage ->
+            if vr.page.current == 1 then
+                Just ( vr.videoList |> Video.sort, Loaded 1 vr.page.total )
 
-    else
-        Nothing
+            else
+                Nothing
+
+        Loading pagesFetched _ ->
+            if vr.page.current == pagesFetched + 1 then
+                Just ( vr.videoList |> Video.sort, Loaded vr.page.current vr.page.total )
+
+            else
+                Nothing
+
+        Loaded _ _ ->
+            Nothing

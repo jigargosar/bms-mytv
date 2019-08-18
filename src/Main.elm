@@ -28,7 +28,7 @@ import Route exposing (Route)
 import Size exposing (Size)
 import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
-import Video exposing (Video, VideoDict)
+import Video exposing (Video, VideoDict, VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
@@ -178,6 +178,8 @@ type Msg
     | Play Video
     | Close
     | More
+    | OnPageLoaderMsg PagedLoader.Msg
+    | AppendVideos VideoList
 
 
 
@@ -245,6 +247,19 @@ update message model =
 
         More ->
             fetchNextPage model
+
+        OnPageLoaderMsg msg ->
+            PagedLoader.update config msg model.pagedLoader
+                |> Tuple.mapFirst (setPagedLoader >> callWith model)
+
+        AppendVideos videos ->
+            appendVideos videos model |> pure
+
+
+config =
+    { onHttpResult = GotData -- HttpResult Value -> msg
+    , onVideos = always NoOp -- VideoList -> msg
+    }
 
 
 httpError _ model =

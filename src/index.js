@@ -143,3 +143,24 @@ function initPubs(pubs) {
     }
   })(pubs)
 }
+
+setTimeout(()=> {
+  const mb = document.getElementById('more-btn')
+
+  let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        // let lazyImage = entry.target;
+        // lazyImage.src = lazyImage.dataset.src;
+        // lazyImage.srcset = lazyImage.dataset.srcset;
+        // lazyImage.classList.remove("lazy");
+        // lazyImageObserver.unobserve(lazyImage);
+        console.log('entry',entry)
+      }
+    });
+  },{rootMargin:"30%"});
+
+  lazyImageObserver.observe(mb)
+
+
+},100)

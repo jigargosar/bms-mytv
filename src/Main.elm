@@ -402,7 +402,7 @@ viewGallery model =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , viewRows model groupedVideos
-        , button [ onClick More ] [ text "more" ]
+        , button [ A.id "more-btn", onClick More ] [ text "more" ]
         ]
 
 

@@ -420,8 +420,22 @@ viewRow model rowIdx videos =
         playingRow =
             playingVideoInList model videos
                 |> Maybe.Extra.unwrap [] (viewPlayingRow model)
+
+        videoCount =
+            List.length videos
+
+        fillerCellCount =
+            thumbsPerRow model - videoCount
+
+        fillerCells =
+            List.repeat fillerCellCount viewFillerCell
     in
-    playingRow ++ [ ( String.fromInt rowIdx, div [ class "flex " ] (List.map (viewCell model) videos) ) ]
+    playingRow
+        ++ [ ( String.fromInt rowIdx
+             , div [ class "flex " ]
+                (List.map (viewCell model) videos ++ fillerCells)
+             )
+           ]
 
 
 playingVideoInList model videos =
@@ -485,6 +499,14 @@ viewPlayingRow model video =
             ]
       )
     ]
+
+
+viewFillerCell =
+    div
+        [ class "flex-grow-1 flex-shrink-1"
+        , css [ flexBasis (px 0) ]
+        ]
+        []
 
 
 viewCell model vid =

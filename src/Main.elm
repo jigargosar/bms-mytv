@@ -57,6 +57,7 @@ type alias Model =
     , dataStr : String
     , videos : List Video
     , pagesFetched : Int
+    , totalPages : Int
     , playingVideo : Maybe Video
     }
 
@@ -148,6 +149,7 @@ init encodedFlags url key =
             , dataStr = ""
             , videos = []
             , pagesFetched = 0
+            , totalPages = -1
             , playingVideo = Nothing
             }
     in
@@ -163,10 +165,14 @@ pageLimit =
 
 fetchNextPage : Model -> Cmd Msg
 fetchNextPage model =
-    Http.get
-        { url = ApiUrls.getVideosPaged (model.pagesFetched + 1) pageLimit
-        , expect = Http.expectJson GotData JD.value
-        }
+    if model.totalPages == model.pagesFetched then
+        Cmd.none
+
+    else
+        Http.get
+            { url = ApiUrls.getVideosPaged (model.pagesFetched + 1) pageLimit
+            , expect = Http.expectJson GotData JD.value
+            }
 
 
 type alias HttpResult a =
@@ -256,7 +262,7 @@ httpError _ model =
 gotData : Value -> Model -> Return
 gotData encodedData =
     formatAndSetEncodedData encodedData
-        >> handlePagedVideoResponse encodedData
+        >> decodeAndUpdate VideosResponse.decoder handlePagedVideoResponse encodedData
 
 
 
@@ -267,16 +273,18 @@ gotData encodedData =
 --        encodedData
 
 
-handlePagedVideoResponse : Value -> Model -> Return
-handlePagedVideoResponse encodedData =
-    decodeAndUpdate VideosResponse.decoder
-        (\vr ->
-            appendVideos (vr.videoList |> Video.sort)
-                >> setPagesFetched vr.page.current
-                >> pure
-        )
-        encodedData
-        >> effect cacheEffect
+handlePagedVideoResponse : VideosResponse -> Model -> Return
+handlePagedVideoResponse vr model =
+    model
+        |> (if model.pagesFetched + 1 == vr.page.current then
+                appendVideos (vr.videoList |> Video.sort)
+                    >> setPagesFetched vr.page.current
+                    >> pure
+                    >> effect cacheEffect
+
+            else
+                pure
+           )
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

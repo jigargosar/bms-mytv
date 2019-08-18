@@ -1,10 +1,8 @@
 module PagedLoader exposing
     ( Model
     , Msg(..)
-    , fetchNextPage
     , init
     , update
-    , updateFromVR
     )
 
 import ApiUrls
@@ -152,32 +150,21 @@ initLoadedStateFromVR vr =
     Loaded <| LoadedRecord vr.page.current vr.page.total
 
 
-updateFromVR : VideosResponse -> Model -> Maybe ( VideoList, Model )
-updateFromVR vr model =
-    case model of
-        LoadingFirstPage ->
-            if vr.page.current == 1 then
-                Just ( vr.videoList |> Video.sort, initLoadedStateFromVR vr )
-
-            else
-                Nothing
-
-        Loading loading ->
-            updateFromVRIfPageNumEq loading.pageNum vr
-
-        LoadingThenFetchNext loading ->
-            updateFromVRIfPageNumEq loading.pageNum vr
-
-        Loaded _ ->
-            Nothing
-
-
-updateFromVRIfPageNumEq pageNum vr =
+updateFromVRIfPageNumEq :
+    Config msg
+    -> Int
+    -> VideosResponse
+    -> Model
+    -> ( Model, Cmd msg )
+updateFromVRIfPageNumEq config pageNum vr model =
     if vr.page.current == pageNum then
-        ( vr.videoList |> Video.sort
-        , initLoadedStateFromVR vr
+        ( initLoadedStateFromVR vr
+        , cmdFromMsg <| config.onVideos (vr.videoList |> Video.sort)
         )
-            |> Just
 
     else
-        Nothing
+        pure model
+
+
+cmdFromMsg msg =
+    Task.succeed identity |> Task.perform (always msg)

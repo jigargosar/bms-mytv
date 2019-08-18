@@ -355,10 +355,15 @@ viewHome model =
     , body =
         [ HasErrors.detailView model
         , viewGallery model
+        , viewFooter model
 
         --        , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
+
+
+viewFooter _ =
+    div [ css [ Css.height <| px 400 ] ] []
 
 
 viewData : Model -> StyledDocument Msg
@@ -393,6 +398,7 @@ viewGallery model =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , viewRows model groupedVideos
+        , button [] [ text "more" ]
         ]
 
 

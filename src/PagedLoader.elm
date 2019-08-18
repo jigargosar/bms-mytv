@@ -17,11 +17,15 @@ type alias LoadingRecord =
     { pageNum : Int, totalPages : Int }
 
 
+type alias LoadedRecord =
+    { pagesLoaded : Int, totalPages : Int }
+
+
 type Model
     = LoadingFirstPage
     | Loading LoadingRecord
     | LoadingThenFetchNext LoadingRecord
-    | Loaded Int Int
+    | Loaded LoadedRecord
 
 
 init : (HttpResult Value -> msg) -> ( Model, Cmd msg )
@@ -62,16 +66,18 @@ fetchNextPage tagger model =
         LoadingThenFetchNext _ ->
             ( model, Cmd.none )
 
-        Loaded pagesFetched totalPages ->
-            if pagesFetched == totalPages then
+        Loaded loaded ->
+            if loaded.pagesLoaded == loaded.totalPages then
                 ( model, Cmd.none )
 
             else
                 let
                     loadPageNum =
-                        pagesFetched + 1
+                        loaded.pagesLoaded + 1
                 in
-                ( Loading { pageNum = loadPageNum, totalPages = totalPages }, fetchPageNum tagger <| pagesFetched + 1 )
+                ( Loading { pageNum = loadPageNum, totalPages = loaded.totalPages }
+                , fetchPageNum tagger <| loadPageNum
+                )
 
 
 fetchPageNum tagger n =
@@ -81,12 +87,16 @@ fetchPageNum tagger n =
         }
 
 
+initLoadedStateFromVR vr =
+    Loaded <| LoadedRecord vr.page.current vr.page.total
+
+
 updateFromVR : VideosResponse -> Model -> Maybe ( VideoList, Model )
 updateFromVR vr model =
     case model of
         LoadingFirstPage ->
             if vr.page.current == 1 then
-                Just ( vr.videoList |> Video.sort, Loaded 1 vr.page.total )
+                Just ( vr.videoList |> Video.sort, initLoadedStateFromVR vr )
 
             else
                 Nothing
@@ -97,14 +107,14 @@ updateFromVR vr model =
         LoadingThenFetchNext loading ->
             updateFromVRIfPageNumEq loading.pageNum vr
 
-        Loaded _ _ ->
+        Loaded _ ->
             Nothing
 
 
 updateFromVRIfPageNumEq pageNum vr =
     if vr.page.current == pageNum then
         ( vr.videoList |> Video.sort
-        , Loaded vr.page.current vr.page.total
+        , initLoadedStateFromVR vr
         )
             |> Just
 

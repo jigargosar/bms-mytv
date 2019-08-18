@@ -80,7 +80,8 @@ cacheDecoder =
             { videos = [] }
     in
     JD.oneOf
-        [ JD.succeed Cache
+        [ JD.succeed initCache
+        , JD.succeed Cache
             |> JDP.optional "videos" Video.listDecoder []
         , JD.null initCache
         , JD.succeed initCache
@@ -382,15 +383,17 @@ getDisplayVideosList model =
     model.videos
 
 
+thumbsPerRow : Model -> Int
+thumbsPerRow model =
+    model.size.width // 250
+
+
 viewGallery : Model -> Html Msg
 viewGallery model =
     let
-        thumbsPerRow =
-            model.size.width // 250
-
         groupedVideos =
             getDisplayVideosList model
-                |> List.Extra.groupsOf thumbsPerRow
+                |> List.Extra.greedyGroupsOf (thumbsPerRow model)
     in
     div []
         [ div [ class "f2 " ] [ text "Videos" ]

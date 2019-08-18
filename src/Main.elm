@@ -164,18 +164,18 @@ init encodedFlags url key =
     model
         |> pure
         |> andThen (decodeAndUpdate flagsDecoder updateFromFlags encodedFlags)
-        |> command (fetchData GotData)
+        |> effect fetchNextPage
 
 
 pageLimit =
     2
 
 
-fetchData : (HttpResult Value -> msg) -> Cmd msg
-fetchData tagger =
+fetchNextPage : Model -> Cmd Msg
+fetchNextPage model =
     Http.get
-        { url = ApiUrls.getVideosPaged 1 pageLimit
-        , expect = Http.expectJson tagger JD.value
+        { url = ApiUrls.getVideosPaged (model.pagesFetched + 1) pageLimit
+        , expect = Http.expectJson GotData JD.value
         }
 
 

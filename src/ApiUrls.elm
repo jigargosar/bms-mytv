@@ -26,6 +26,7 @@ pageLimit s =
     int "pageLimit" s
 
 
+getVideosPaged : Int -> Int -> String
 getVideosPaged pn pl =
     Builder.crossOrigin corsUrl
         [ getDataUrl ]

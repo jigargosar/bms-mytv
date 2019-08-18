@@ -481,8 +481,8 @@ viewPlayingRow model video =
             toFloat model.size.width
                 * 60
                 / 100
-                |> Debug.log "vidWidth"
 
+        --                |> Debug.log "vidWidth"
         vidHeight =
             9 / 16 * vidWidth
     in

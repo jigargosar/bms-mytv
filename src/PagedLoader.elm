@@ -74,8 +74,8 @@ updateFromVR vr model =
             else
                 Nothing
 
-        Loading pagesFetched ->
-            if vr.page.current == pagesFetched + 1 then
+        Loading pageNum ->
+            if vr.page.current == pageNum then
                 Just ( vr.videoList |> Video.sort, Loaded vr.page.current vr.page.total )
 
             else

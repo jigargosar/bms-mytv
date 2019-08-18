@@ -250,12 +250,14 @@ update message model =
                 |> Tuple.mapFirst (setPagedLoader >> callWith model)
 
         AppendVideos videos ->
-            appendVideos videos model |> pure
+            appendVideos videos model
+                |> pure
+                |> effect cacheEffect
 
 
 config =
-    { onHttpResult = GotData -- HttpResult Value -> msg
-    , onVideos = always NoOp -- VideoList -> msg
+    { onHttpResult = GotData
+    , onVideos = AppendVideos
     }
 
 
@@ -270,16 +272,8 @@ gotData encodedData =
 
 
 handlePagedVideoResponse : VideosResponse -> Model -> Return
-handlePagedVideoResponse vr model =
-    PagedLoader.updateFromVR vr model.pagedLoader
-        |> Maybe.Extra.unwrap (pure model)
-            (\( videos, pagedLoader ) ->
-                model
-                    |> setPagedLoader pagedLoader
-                    |> appendVideos videos
-                    |> pure
-                    |> effect cacheEffect
-            )
+handlePagedVideoResponse vr =
+    update (OnPageLoaderMsg <| PagedLoader.OnVideoResponse vr)
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

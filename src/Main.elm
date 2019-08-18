@@ -246,14 +246,19 @@ httpError _ model =
 
 gotData : Value -> Model -> Return
 gotData encodedData model =
-    formatAndSetEncodedData encodedData model
-        |> pure
-        |> effect cacheEffect
+    updateResponseForDebug encodedData model
         |> andThen
             (decodeAndUpdate videoListDecoder
                 (\videos -> setVideos videos >> pure)
                 encodedData
             )
+
+
+updateResponseForDebug : Value -> Model -> Return
+updateResponseForDebug encodedData =
+    formatAndSetEncodedData encodedData
+        >> pure
+        >> effect cacheEffect
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

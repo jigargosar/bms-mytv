@@ -30,7 +30,7 @@ import Result.Extra
 import Return
 import Route exposing (Route)
 import Size exposing (Size)
-import UpdateExtra exposing (andThen, command, pure)
+import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
 import Video exposing (Video)
 
@@ -59,7 +59,7 @@ type alias Model =
 
 
 type alias Cache =
-    {}
+    { videos : List Video }
 
 
 type alias Flags =
@@ -71,22 +71,23 @@ type alias Flags =
 cacheDecoder : Decoder Cache
 cacheDecoder =
     JD.succeed Cache
+        |> JDP.custom (JD.oneOf [ JD.field "videos" Video.listDecoder ])
 
 
 cacheEncoder : Cache -> Value
-cacheEncoder _ =
+cacheEncoder { videos } =
     JE.object
-        []
+        [ ( "videos", Video.listEncoder videos ) ]
 
 
 setModelFromCache : Cache -> Model -> Model
-setModelFromCache _ model =
-    model
+setModelFromCache { videos } model =
+    { model | videos = videos }
 
 
 cacheFromModel : Model -> Cache
-cacheFromModel _ =
-    {}
+cacheFromModel model =
+    { videos = model.videos }
 
 
 flagsDecoder : Decoder Flags
@@ -235,6 +236,7 @@ gotData encodedData model =
         |> decodeAndUpdate videoListDecoder
             (\videos -> setVideos videos >> pure)
             encodedData
+        |> effect cacheEffect
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

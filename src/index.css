@@ -5,6 +5,7 @@
   --sp1: 0.25rem;
   --sp2: 0.5rem;
   --sp3: 1rem;
+  --sp4: 2rem;
 }
 
 body {
@@ -58,6 +59,13 @@ html,
   margin-bottom: var(--sp3);
 }
 .vs3 > :last-child {
+  margin-bottom: 0;
+}
+
+.vs4 > * {
+  margin-bottom: var(--sp4);
+}
+.vs4 > :last-child {
   margin-bottom: 0;
 }
 

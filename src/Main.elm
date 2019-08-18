@@ -147,9 +147,13 @@ init encodedFlags url key =
         |> command (fetchData GotData)
 
 
+pageItemLimit =
+    100
+
+
 fetchData tagger =
     Http.get
-        { url = ApiUrls.getVideosPaged 1 30
+        { url = ApiUrls.getVideosPaged 1 pageItemLimit
         , expect = Http.expectJson tagger JD.value
         }
 
@@ -338,7 +342,7 @@ viewGallery model =
 viewRows : Model -> List (List Video) -> Html Msg
 viewRows model groupedVideos =
     K.node "div"
-        [ class "vs3 flex flex-column _items-center" ]
+        [ class "vs4 flex flex-column _items-center" ]
         (groupedVideos
             |> List.indexedMap (viewRow model)
             |> List.concat
@@ -391,7 +395,7 @@ viewPlayingRow model video =
             --            , style "background-color" "#3a434c"
             --            , style "background-color" "#282f35"
             --            , style "background-color" "#1c2125"
-            , style "background-color" "#14171a"
+            , style "background-color" "#3C454F"
             ]
             [ div
                 [ class "absolute absolute--fill  w-100 z-999"

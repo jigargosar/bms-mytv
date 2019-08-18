@@ -4,7 +4,7 @@ import Url.Builder as Builder exposing (QueryParameter, int, string)
 
 
 corsUrl =
-    "https://cors-anywhere.herokuapp.com/"
+    "https://cors-anywhere.herokuapp.com"
 
 
 getDataUrl =

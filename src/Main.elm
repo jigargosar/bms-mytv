@@ -271,9 +271,13 @@ gotData encodedData =
         >> decodeAndUpdate VideosResponse.decoder handlePagedVideoResponse encodedData
 
 
+updatePageLoader message =
+    update (OnPageLoaderMsg message)
+
+
 handlePagedVideoResponse : VideosResponse -> Model -> Return
 handlePagedVideoResponse vr =
-    update (OnPageLoaderMsg <| PagedLoader.OnVideoResponse vr)
+    updatePageLoader (PagedLoader.OnVideoResponse vr)
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

@@ -15,8 +15,8 @@ import VideosResponse exposing (VideosResponse)
 
 type PagedLoader
     = LoadingFirstPage
+    | Loading Int
     | Loaded Int Int
-    | Loading Int Int
 
 
 init : (HttpResult Value -> msg) -> ( PagedLoader, Cmd msg )
@@ -36,21 +36,25 @@ type alias HttpResult a =
     Result Http.Error a
 
 
-fetchNextPage : (HttpResult Value -> msg) -> PagedLoader -> Cmd msg
+fetchNextPage : (HttpResult Value -> msg) -> PagedLoader -> ( PagedLoader, Cmd msg )
 fetchNextPage tagger model =
     case model of
         LoadingFirstPage ->
-            Cmd.none
+            ( model, Cmd.none )
 
-        Loading _ _ ->
-            Cmd.none
+        Loading _ ->
+            ( model, Cmd.none )
 
         Loaded pagesFetched totalPages ->
             if pagesFetched == totalPages then
-                Cmd.none
+                ( model, Cmd.none )
 
             else
-                fetchPageNum tagger <| pagesFetched + 1
+                let
+                    loadPageNum =
+                        pagesFetched + 1
+                in
+                ( Loading loadPageNum, fetchPageNum tagger <| pagesFetched + 1 )
 
 
 fetchPageNum tagger n =
@@ -70,7 +74,7 @@ updateFromVR vr model =
             else
                 Nothing
 
-        Loading pagesFetched _ ->
+        Loading pagesFetched ->
             if vr.page.current == pagesFetched + 1 then
                 Just ( vr.videoList |> Video.sort, Loaded vr.page.current vr.page.total )
 

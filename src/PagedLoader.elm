@@ -11,7 +11,7 @@ import Json.Decode as JD
 import Json.Encode exposing (Value)
 import Maybe.Extra
 import Task
-import UpdateExtra exposing (pure)
+import UpdateExtra exposing (andThen, pure)
 import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
@@ -68,46 +68,14 @@ update config message model =
         OnVideoResponse vr ->
             case model of
                 LoadingFirstPage ->
-                    let
-                        cmd : msg
-                        cmd =
-                            config.onVideos (vr.videoList |> Video.sort)
-                    in
-                    if vr.page.current == 1 then
-                        ( initLoadedStateFromVR vr
-                        , Task.succeed identity |> Task.perform (always cmd)
-                        )
-
-                    else
-                        pure model
+                    updateFromVRIfPageNumEq config 1 vr model
 
                 Loading loading ->
-                    let
-                        cmd : msg
-                        cmd =
-                            config.onVideos (vr.videoList |> Video.sort)
-                    in
-                    if vr.page.current == loading.pageNum then
-                        ( initLoadedStateFromVR vr
-                        , Task.succeed identity |> Task.perform (always cmd)
-                        )
-
-                    else
-                        pure model
+                    updateFromVRIfPageNumEq config loading.pageNum vr model
 
                 LoadingThenFetchNext loading ->
-                    let
-                        cmd : msg
-                        cmd =
-                            config.onVideos (vr.videoList |> Video.sort)
-                    in
-                    if vr.page.current == loading.pageNum then
-                        ( initLoadedStateFromVR vr
-                        , Task.succeed identity |> Task.perform (always cmd)
-                        )
-
-                    else
-                        pure model
+                    updateFromVRIfPageNumEq config loading.pageNum vr model
+                        |> andThen (fetchNextPage config.onHttpResult)
 
                 Loaded _ ->
                     pure model

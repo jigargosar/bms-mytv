@@ -168,7 +168,7 @@ init encodedFlags url key =
 
 
 pageLimit =
-    2
+    10
 
 
 fetchNextPage : Model -> Cmd Msg

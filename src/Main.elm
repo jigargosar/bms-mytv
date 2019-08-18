@@ -197,6 +197,7 @@ type Msg
     | GotData (HttpResult Value)
     | Play Video
     | Close
+    | More
 
 
 
@@ -259,6 +260,9 @@ update message model =
                 [ Ports.disposePlayer ()
                 ]
             )
+
+        More ->
+            pure model |> effect fetchNextPage
 
 
 httpError _ model =
@@ -398,7 +402,7 @@ viewGallery model =
     div []
         [ div [ class "f2 " ] [ text "Videos" ]
         , viewRows model groupedVideos
-        , button [] [ text "more" ]
+        , button [ onClick More ] [ text "more" ]
         ]
 
 

@@ -34,6 +34,7 @@ import Size exposing (Size)
 import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
 import Video exposing (Video)
+import VideosResponse exposing (VideosResponse)
 
 
 videoListDecoder : Decoder (List Video)
@@ -147,15 +148,20 @@ init encodedFlags url key =
         |> command (fetchData GotData)
 
 
-pageItemLimit =
-    100
+pageLimit =
+    2
 
 
+fetchData : (HttpResult Value -> msg) -> Cmd msg
 fetchData tagger =
     Http.get
-        { url = ApiUrls.getVideosPaged 1 pageItemLimit
+        { url = ApiUrls.getVideosPaged 1 pageLimit
         , expect = Http.expectJson tagger JD.value
         }
+
+
+type alias HttpResult a =
+    Result Http.Error a
 
 
 
@@ -167,7 +173,7 @@ type Msg
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url
     | OnResize Size
-    | GotData (Result Http.Error Value)
+    | GotData (HttpResult Value)
     | Play Video
     | Close
 
@@ -241,10 +247,13 @@ httpError _ model =
 gotData : Value -> Model -> Return
 gotData encodedData model =
     formatAndSetEncodedData encodedData model
-        |> decodeAndUpdate videoListDecoder
-            (\videos -> setVideos videos >> pure)
-            encodedData
+        |> pure
         |> effect cacheEffect
+        |> andThen
+            (decodeAndUpdate videoListDecoder
+                (\videos -> setVideos videos >> pure)
+                encodedData
+            )
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return
@@ -307,8 +316,8 @@ viewRoute route model =
         Route.Home ->
             viewHome model
 
-        Route.Mock ->
-            viewRoute Route.Home model
+        Route.Data ->
+            viewData model
 
 
 viewHome : Model -> StyledDocument Msg
@@ -319,6 +328,16 @@ viewHome model =
         , viewGallery model
 
         --        , div [ class "pre code" ] [ text model.dataStr ]
+        ]
+    }
+
+
+viewData : Model -> StyledDocument Msg
+viewData model =
+    { title = "Data"
+    , body =
+        [ HasErrors.detailView model
+        , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
 

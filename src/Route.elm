@@ -1,4 +1,4 @@
-module Route exposing (Route(..), fromUrl, toHomeUrl, toMockUrl)
+module Route exposing (Route(..), fromUrl, toDataUrl, toHomeUrl)
 
 import Url exposing (Url)
 import Url.Builder as B
@@ -8,14 +8,14 @@ import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, to
 type Route
     = NotFound Url
     | Home
-    | Mock
+    | Data
 
 
 routeParser : Parser (Route -> a) a
 routeParser =
     oneOf
         [ map Home top
-        , map Mock (s "mock")
+        , map Data (s "data")
         ]
 
 
@@ -25,9 +25,9 @@ fromUrl url =
         |> Maybe.withDefault (NotFound url)
 
 
-toMockUrl : String
-toMockUrl =
-    B.absolute [ "mock" ] []
+toDataUrl : String
+toDataUrl =
+    B.absolute [ "data" ] []
 
 
 toHomeUrl : String

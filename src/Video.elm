@@ -1,5 +1,6 @@
 module Video exposing (..)
 
+import Dict exposing (Dict)
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
@@ -59,3 +60,11 @@ listDecoder =
 listEncoder : List Video -> Value
 listEncoder =
     JE.list videoEncoder
+
+
+type alias VideoDict =
+    Dict String Video
+
+
+dictDecoder =
+    JD.dict videoDecoder

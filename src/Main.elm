@@ -154,11 +154,8 @@ init encodedFlags url key =
 
 
 fetchNextPage : Model -> Return
-fetchNextPage model =
-    model
-        |> .pagedLoader
-        >> PagedLoader.fetchNextPage GotData
-        >> Tuple.mapFirst (\pl -> setPagedLoader pl model)
+fetchNextPage =
+    update (OnPageLoaderMsg PagedLoader.FetchNext)
 
 
 type alias HttpResult a =

@@ -1,6 +1,6 @@
 module PagedLoader exposing
     ( Model
-    , Msg
+    , Msg(..)
     , fetchNextPage
     , init
     , update

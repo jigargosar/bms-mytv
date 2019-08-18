@@ -28,7 +28,7 @@ import Result.Extra
 import Return
 import Route exposing (Route)
 import Size exposing (Size)
-import UpdateExtra exposing (andThen, effect, pure)
+import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
 import Video exposing (Video, VideoDict)
 import VideosResponse exposing (VideosResponse)
@@ -134,6 +134,9 @@ init encodedFlags url key =
         route =
             Route.fromUrl url
 
+        ( pagedLoader, plCmd ) =
+            PagedLoader.init GotData
+
         model : Model
         model =
             { errors = Errors.fromStrings []
@@ -142,14 +145,14 @@ init encodedFlags url key =
             , route = route
             , dataStr = ""
             , videos = []
-            , pagedLoader = PagedLoader.init
+            , pagedLoader = pagedLoader
             , playingVideo = Nothing
             }
     in
     model
         |> pure
         |> andThen (decodeAndUpdate flagsDecoder updateFromFlags encodedFlags)
-        |> effect fetchNextPage
+        |> command plCmd
 
 
 fetchNextPage : Model -> Cmd Msg

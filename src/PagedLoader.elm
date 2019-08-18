@@ -19,9 +19,13 @@ type alias PagedLoader =
     }
 
 
-init : PagedLoader
-init =
-    { pagesFetched = 0, totalPages = -1 }
+init : (HttpResult Value -> msg) -> ( PagedLoader, Cmd msg )
+init tagger =
+    let
+        model =
+            { pagesFetched = 0, totalPages = -1 }
+    in
+    ( model, fetchNextPage tagger model )
 
 
 pageLimit =

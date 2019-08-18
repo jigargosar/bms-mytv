@@ -1,12 +1,10 @@
 module Main exposing (main)
 
-import ApiUrls
 import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Navigation as Nav
 import Css exposing (flexBasis, none, pointerEvents, px)
 import Css.Functional exposing (..)
-import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
 import FontAwesome.Icon as FAIcon
@@ -24,7 +22,7 @@ import Json.Decode.Pipeline as JDP
 import Json.Encode as JE exposing (Value)
 import List.Extra
 import Maybe.Extra
-import PagedLoader
+import PagedLoader exposing (PagedLoader)
 import Ports exposing (FirestoreQueryResponse)
 import Result.Extra
 import Return
@@ -47,8 +45,7 @@ type alias Model =
     , route : Route
     , dataStr : String
     , videos : List Video
-    , pagesFetched : Int
-    , totalPages : Int
+    , pagedLoader : PagedLoader
     , playingVideo : Maybe Video
     }
 
@@ -118,9 +115,9 @@ appendVideos videos model =
     { model | videos = model.videos ++ videos }
 
 
-setPagesFetched : Int -> Model -> Model
-setPagesFetched pagesFetched model =
-    { model | pagesFetched = pagesFetched }
+setPagedLoader : a -> { b | pagedLoader : a } -> { b | pagedLoader : a }
+setPagedLoader pagedLoader model =
+    { model | pagedLoader = pagedLoader }
 
 
 
@@ -145,8 +142,7 @@ init encodedFlags url key =
             , route = route
             , dataStr = ""
             , videos = []
-            , pagesFetched = 0
-            , totalPages = -1
+            , pagedLoader = PagedLoader.init
             , playingVideo = Nothing
             }
     in
@@ -158,7 +154,7 @@ init encodedFlags url key =
 
 fetchNextPage : Model -> Cmd Msg
 fetchNextPage =
-    PagedLoader.fetchNextPage GotData
+    .pagedLoader >> PagedLoader.fetchNextPage GotData
 
 
 type alias HttpResult a =
@@ -259,10 +255,11 @@ gotData encodedData =
 
 handlePagedVideoResponse : VideosResponse -> Model -> Return
 handlePagedVideoResponse vr model =
-    PagedLoader.updateFromVR vr model
+    PagedLoader.updateFromVR vr model.pagedLoader
         |> Maybe.Extra.unwrap (pure model)
-            (\( videos, m ) ->
-                m
+            (\( videos, pagedLoader ) ->
+                model
+                    |> setPagedLoader pagedLoader
                     |> appendVideos videos
                     |> pure
                     |> effect cacheEffect
@@ -574,13 +571,15 @@ viewSynopsis synopsis =
             )
 
 
-isBrTag node =
-    case node of
-        Html.Parser.Element "br" _ _ ->
-            True
 
-        _ ->
-            False
+--isBrTag node =
+--    case node of
+--        Html.Parser.Element "br" _ _ ->
+--            True
+--
+--        _ ->
+--            False
+--
 
 
 removeTopLevelParagraphTag list =
@@ -592,19 +591,18 @@ removeTopLevelParagraphTag list =
             list
 
 
-faBtn : msg -> FAIcon.Icon -> Html msg
-faBtn clickHandler icon =
-    div
-        [ class "gray hover-dark-gray pointer"
-        , onClick clickHandler
-        ]
-        [ icon
-            |> FAIcon.viewStyled [ FontAwesome.Attributes.lg ]
-            |> H.fromUnstyled
-        ]
 
-
-
+--faBtn : msg -> FAIcon.Icon -> Html msg
+--faBtn clickHandler icon =
+--    div
+--        [ class "gray hover-dark-gray pointer"
+--        , onClick clickHandler
+--        ]
+--        [ icon
+--            |> FAIcon.viewStyled [ FontAwesome.Attributes.lg ]
+--            |> H.fromUnstyled
+--        ]
+--
 -- MAIN
 
 

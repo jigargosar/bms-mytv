@@ -1,6 +1,7 @@
 module PagedLoader exposing
     ( PagedLoader
     , fetchNextPage
+    , init
     , updateFromVR
     )
 
@@ -12,11 +13,15 @@ import Video exposing (VideoList)
 import VideosResponse exposing (VideosResponse)
 
 
-type alias PagedLoader a =
-    { a
-        | pagesFetched : Int
-        , totalPages : Int
+type alias PagedLoader =
+    { pagesFetched : Int
+    , totalPages : Int
     }
+
+
+init : PagedLoader
+init =
+    { pagesFetched = -1, totalPages = 0 }
 
 
 pageLimit =
@@ -27,7 +32,7 @@ type alias HttpResult a =
     Result Http.Error a
 
 
-fetchNextPage : (HttpResult Value -> msg) -> PagedLoader a -> Cmd msg
+fetchNextPage : (HttpResult Value -> msg) -> PagedLoader -> Cmd msg
 fetchNextPage tagger model =
     if model.totalPages == model.pagesFetched then
         Cmd.none
@@ -44,7 +49,7 @@ setPagesFetched pagesFetched model =
     { model | pagesFetched = pagesFetched }
 
 
-updateFromVR : VideosResponse -> PagedLoader a -> Maybe ( VideoList, PagedLoader a )
+updateFromVR : VideosResponse -> PagedLoader -> Maybe ( VideoList, PagedLoader )
 updateFromVR vr model =
     if model.pagesFetched + 1 == vr.page.current then
         ( vr.videoList |> Video.sort, setPagesFetched vr.page.current model )

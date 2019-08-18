@@ -3,10 +3,9 @@ module Main exposing (main)
 import ApiUrls
 import BasicsExtra exposing (callWith, eq_)
 import Browser
-import Browser.Dom as Dom
 import Browser.Navigation as Nav
-import Css exposing (auto, flexBasis, fontSize, hex, int, lineHeight, maxWidth, none, num, outline, outline3, outlineStyle, outset, pct, pointerEvents, px, scale, transform, transforms, zIndex, zero)
-import Css.Functional exposing (lh0)
+import Css exposing (flexBasis, none, pointerEvents, px)
+import Css.Functional exposing (..)
 import Dict
 import Errors exposing (Errors)
 import FontAwesome.Attributes
@@ -15,11 +14,10 @@ import FontAwesome.Styles
 import HasErrors
 import Html.Parser
 import Html.Parser.Util
-import Html.Styled as H exposing (Html, button, div, img, p, text, video)
-import Html.Styled.Attributes as A exposing (class, css, height, href, src, style, width)
+import Html.Styled as H exposing (Html, button, div, img, text, video)
+import Html.Styled.Attributes as A exposing (class, css, height, href, src, style)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Keyed as K
-import Html.Styled.Lazy exposing (lazy)
 import Http
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
@@ -31,18 +29,10 @@ import Result.Extra
 import Return
 import Route exposing (Route)
 import Size exposing (Size)
-import UpdateExtra exposing (andThen, command, effect, pure)
+import UpdateExtra exposing (andThen, effect, pure)
 import Url exposing (Url)
 import Video exposing (Video, VideoDict)
 import VideosResponse exposing (VideosResponse)
-
-
-videoListDecoder : Decoder (List Video)
-videoListDecoder =
-    JD.at [ "MYTV", "CategoryVideoDetails" ]
-        (JD.dict Video.videoDecoder
-            |> JD.map Dict.values
-        )
 
 
 
@@ -488,13 +478,8 @@ viewPlayingRow model video =
     in
     [ ( video.id
       , div
-            [ class "flex w-100 relative "
-            , css [ Css.marginBottom zero ]
-
-            --            , style "background-color" "#3a434c"
-            --            , style "background-color" "#282f35"
-            --            , style "background-color" "#1c2125"
-            , style "background-color" "#3C454F"
+            [ class "flex w-100 relative"
+            , css [ mb0, bgHex "#3C454F" ]
             ]
             [ div
                 [ class "absolute absolute--fill  w-100 z-999"

@@ -21,7 +21,7 @@ type alias PagedLoader =
 
 init : PagedLoader
 init =
-    { pagesFetched = -1, totalPages = 0 }
+    { pagesFetched = 0, totalPages = -1 }
 
 
 pageLimit =

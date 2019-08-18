@@ -259,16 +259,14 @@ gotData encodedData =
 
 handlePagedVideoResponse : VideosResponse -> Model -> Return
 handlePagedVideoResponse vr model =
-    model
-        |> (if model.pagesFetched + 1 == vr.page.current then
-                appendVideos (vr.videoList |> Video.sort)
-                    >> setPagesFetched vr.page.current
-                    >> pure
-                    >> effect cacheEffect
-
-            else
-                pure
-           )
+    PagedLoader.updateFromVR vr model
+        |> Maybe.Extra.unwrap (pure model)
+            (\( videos, m ) ->
+                m
+                    |> appendVideos videos
+                    |> pure
+                    |> effect cacheEffect
+            )
 
 
 decodeAndUpdate : Decoder a -> (a -> Model -> Return) -> Value -> Model -> Return

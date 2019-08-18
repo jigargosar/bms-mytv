@@ -16,6 +16,7 @@ import VideosResponse exposing (VideosResponse)
 type PagedLoader
     = LoadingFirstPage
     | Loading Int
+    | LoadingThenFetchNext Int
     | Loaded Int Int
 
 
@@ -42,7 +43,10 @@ fetchNextPage tagger model =
         LoadingFirstPage ->
             ( model, Cmd.none )
 
-        Loading _ ->
+        Loading pageNum ->
+            ( LoadingThenFetchNext pageNum, Cmd.none )
+
+        LoadingThenFetchNext _ ->
             ( model, Cmd.none )
 
         Loaded pagesFetched totalPages ->
@@ -75,11 +79,21 @@ updateFromVR vr model =
                 Nothing
 
         Loading pageNum ->
-            if vr.page.current == pageNum then
-                Just ( vr.videoList |> Video.sort, Loaded vr.page.current vr.page.total )
+            updateFromVRIfPageNumEq pageNum vr
 
-            else
-                Nothing
+        LoadingThenFetchNext pageNum ->
+            updateFromVRIfPageNumEq pageNum vr
 
         Loaded _ _ ->
             Nothing
+
+
+updateFromVRIfPageNumEq pageNum vr =
+    if vr.page.current == pageNum then
+        ( vr.videoList |> Video.sort
+        , Loaded vr.page.current vr.page.total
+        )
+            |> Just
+
+    else
+        Nothing

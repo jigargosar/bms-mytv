@@ -145,7 +145,7 @@ function initPubs(pubs) {
 }
 
 setTimeout(() => {
-  const mb = document.getElementById('more-btn')
+  const mb = document.getElementById('load-more-placeholder')
 
   let lazyImageObserver = new IntersectionObserver(
     function(entries, observer) {
@@ -166,3 +166,10 @@ setTimeout(() => {
 
   lazyImageObserver.observe(mb)
 }, 100)
+
+
+if (module.hot) {
+  module.hot.accept(function () {
+    location.reload();
+  });
+}

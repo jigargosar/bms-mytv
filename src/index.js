@@ -76,7 +76,7 @@ customElements.define(
     }
 
     disconnectedCallback() {
-      this._io.disconnect()
+      this._io.unobserve(this)
     }
   },
 )

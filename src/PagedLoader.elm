@@ -25,7 +25,7 @@ type alias LoadedRecord =
 
 
 type Model
-    = LoadingFirstPage Bool
+    = LoadingFirstPage
     | Loading LoadingRecord
     | LoadingThenFetchNext LoadingRecord
     | Loaded LoadedRecord
@@ -35,7 +35,7 @@ init : (HttpResult Value -> msg) -> ( Model, Cmd msg )
 init tagger =
     let
         model =
-            LoadingFirstPage False
+            LoadingFirstPage
     in
     ( model, fetchPageNum tagger 1 )
 
@@ -43,7 +43,7 @@ init tagger =
 getLoadingVideoCount : Model -> Int
 getLoadingVideoCount model =
     case model of
-        LoadingFirstPage thenLoadNext ->
+        LoadingFirstPage ->
             pageLimit
 
         Loading _ ->
@@ -83,14 +83,9 @@ update config message model =
 
         OnVideoResponse vr ->
             case model of
-                LoadingFirstPage thenLoadNext ->
+                LoadingFirstPage ->
                     updateFromVRIfPageNumEq config 1 vr model
-                        |> (if thenLoadNext then
-                                andThen (fetchNextPage config.onHttpResult)
-
-                            else
-                                identity
-                           )
+                        |> andThen (fetchNextPage config.onHttpResult)
 
                 Loading loading ->
                     updateFromVRIfPageNumEq config loading.pageNum vr model
@@ -106,10 +101,7 @@ update config message model =
 fetchNextPage : (HttpResult Value -> msg) -> Model -> ( Model, Cmd msg )
 fetchNextPage tagger model =
     case model of
-        LoadingFirstPage False ->
-            ( LoadingFirstPage True, Cmd.none )
-
-        LoadingFirstPage True ->
+        LoadingFirstPage ->
             ( model, Cmd.none )
 
         Loading pageNum ->

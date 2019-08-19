@@ -409,8 +409,13 @@ viewGallery model =
         displayVideos =
             getDisplayVideosList model
 
+        loadingCells =
+            List.repeat 3 LoadingCell
+
         cells =
-            displayVideos |> List.map ImageCell
+            displayVideos
+                |> List.map ImageCell
+                |> (\l -> l ++ loadingCells)
 
         rowCellCount =
             thumbsPerRow model
@@ -488,8 +493,7 @@ videoContainerDomId videoId =
     videoId
 
 
-viewPlayingRow : Model -> Video -> List ( String, Html Msg )
-viewPlayingRow model video =
+computeVideoHeight model =
     let
         vidWidth =
             toFloat model.size.width
@@ -499,6 +503,15 @@ viewPlayingRow model video =
         --                |> Debug.log "vidWidth"
         vidHeight =
             9 / 16 * vidWidth
+    in
+    vidHeight
+
+
+viewPlayingRow : Model -> Video -> List ( String, Html Msg )
+viewPlayingRow model video =
+    let
+        vidHeight =
+            computeVideoHeight model
     in
     [ ( video.id
       , div
@@ -544,7 +557,15 @@ viewCell model vid =
             viewImageCell model video
 
         LoadingCell ->
-            div [] []
+            let
+                vidHeight =
+                    computeVideoHeight model
+            in
+            div
+                [ class "flex-grow-1 flex-shrink-1"
+                , css [ flexBasis (px 0), Css.height <| px vidHeight ]
+                ]
+                []
 
 
 viewImageCell model vid =

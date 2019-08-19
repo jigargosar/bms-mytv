@@ -409,7 +409,7 @@ viewGallery model =
                 |> List.Extra.greedyGroupsOf (thumbsPerRow model)
     in
     div []
-        [ div [ class "f2 " ] [ text "Videos" ]
+        [ div [ class "ph3 pv1 f3 lh-copy" ] [ text "MyTV" ]
         , viewRows model groupedVideos
         , button [ A.id "more-btn", onClick More ] [ text "more" ]
         ]

@@ -609,10 +609,7 @@ viewImageCell model vid =
                 [ img [ height (thumbHeight model |> round) ] []
                 ]
             ]
-        , div
-            [ class "pa2 f6 lh-title "
-            , style "text-shadow" "1px 1px 2px black"
-            ]
+        , div [ class "pa2 f6 lh-title" ]
             [ text vid.title ]
         ]
 

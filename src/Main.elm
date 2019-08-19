@@ -587,10 +587,8 @@ viewImageCell model vid =
         , onClick <| Play vid
         ]
         [ H.node "lazy-image"
-            [ src vid.imageUrl
-            , class "flex"
-            , class ""
-            , class "bg-pink"
+            [ class "flex bg-pink"
+            , src vid.imageUrl
             ]
             [ img
                 [ height (thumbHeight model |> round)

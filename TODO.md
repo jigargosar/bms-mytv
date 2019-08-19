@@ -2,6 +2,7 @@
 
 [x] publish on github
 [x] deploy on firebase
+[x] show request inflight placeholders
 * Clean up UI
 * lazy load images
 * Setup CI

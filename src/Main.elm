@@ -562,7 +562,7 @@ viewCell model vid =
                     thumbHeight model + 50
             in
             div
-                [ class "flex-grow-1 flex-shrink-1"
+                [ class "flex-grow-1 flex-shrink-1 bg-pink"
                 , css [ flexBasis (px 0), Css.height <| px cellHeight ]
                 ]
                 []

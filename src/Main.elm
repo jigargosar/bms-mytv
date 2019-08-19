@@ -12,7 +12,7 @@ import HasErrors
 import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, button, div, img, text, video)
-import Html.Styled.Attributes as A exposing (class, css, height, href, src, style)
+import Html.Styled.Attributes as A exposing (class, css, height, href, poster, src, style)
 import Html.Styled.Events exposing (on, onClick)
 import Html.Styled.Keyed as K
 import Http
@@ -525,7 +525,10 @@ viewPlayingRow model video =
                 ]
                 []
             , div [ class "w-70 _bg-black-30" ]
-                [ div [ A.id <| videoContainerDomId video.id ] []
+                [ {- div [ A.id <| videoContainerDomId video.id ] [] -}
+                  H.node "azure-media-player"
+                    [ src video.videoUrl, poster video.imageUrl ]
+                    []
                 ]
             , div
                 [ class "w-30 pa3 pb0 flex flex-column"

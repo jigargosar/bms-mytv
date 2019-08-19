@@ -104,8 +104,8 @@ fetchNextPage tagger model =
         LoadingFirstPage ->
             ( model, Cmd.none )
 
-        Loading pageNum ->
-            ( LoadingThenFetchNext pageNum, Cmd.none )
+        Loading loading ->
+            ( LoadingThenFetchNext loading, Cmd.none )
 
         LoadingThenFetchNext _ ->
             ( model, Cmd.none )

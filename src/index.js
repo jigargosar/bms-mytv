@@ -8,17 +8,21 @@ import mapObjIndexed from 'ramda/es/mapObjIndexed'
 import path from 'ramda/es/path'
 import propOr from 'ramda/es/propOr'
 import identity from 'ramda/es/identity'
+import equals from 'ramda/es/equals'
 
 // CE LAZY IMAGE
 
 customElements.define(
   'lazy-image',
   class extends HTMLElement {
-
-    attributeChangedCallback(name, oldValue, newValue) {
-    debugger
-      console.log(name, oldValue, newValue)
-    }
+    // static get observedAttributes() {
+    //   return ['src'];
+    // }
+    //
+    // attributeChangedCallback(name, oldValue, newValue) {
+    //   debugger
+    //   console.log(name, oldValue, newValue)
+    // }
 
 
     _startObserving(){
@@ -30,6 +34,7 @@ customElements.define(
     }
 
     set src(src) {
+      if(equals(src, this.src)) return
       this._startObserving()
       this._src = src
     }
@@ -44,7 +49,7 @@ customElements.define(
       this.io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.target === this) {
-            this.firstChild.src = this._src
+            this.firstChild.src = this.src
             this._stopObserving()
           }
         })

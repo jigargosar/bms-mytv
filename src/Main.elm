@@ -586,15 +586,17 @@ viewImageCell model vid =
         , css [ flexBasis (px 0) ]
         , onClick <| Play vid
         ]
-        [ div
-            [ css []
-            , class "flex items-center justify-center"
-            , class "pa3"
+        [ H.node "lazy-image"
+            [ src vid.imageUrl
+            , class "flex"
+            , class ""
+            , class "bg-pink"
             ]
-            [ H.node "lazy-image"
-                [ A.property "src" (JE.string vid.imageUrl) ]
-                [ img [ height (thumbHeight model |> round) ] []
+            [ img
+                [ height (thumbHeight model |> round)
+                , class "w-100"
                 ]
+                []
             ]
         , div [ class "pa2 f6 lh-title" ]
             [ text vid.title ]

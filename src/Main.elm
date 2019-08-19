@@ -493,7 +493,7 @@ videoContainerDomId videoId =
     videoId
 
 
-computeVideoHeight model =
+computeVideoPlayerHeight model =
     let
         vidWidth =
             toFloat model.size.width
@@ -511,7 +511,7 @@ viewPlayingRow : Model -> Video -> List ( String, Html Msg )
 viewPlayingRow model video =
     let
         vidHeight =
-            computeVideoHeight model
+            computeVideoPlayerHeight model
     in
     [ ( video.id
       , div
@@ -558,12 +558,12 @@ viewCell model vid =
 
         LoadingCell ->
             let
-                vidHeight =
-                    computeVideoHeight model
+                cellHeight =
+                    thumbHeight model + 50
             in
             div
                 [ class "flex-grow-1 flex-shrink-1"
-                , css [ flexBasis (px 0), Css.height <| px vidHeight ]
+                , css [ flexBasis (px 0), Css.height <| px cellHeight ]
                 ]
                 []
 

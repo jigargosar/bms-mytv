@@ -9,15 +9,6 @@ import path from "ramda/es/path"
 import propOr from "ramda/es/propOr"
 import identity from "ramda/es/identity"
 
-// import {
-//   forEachObjIndexed,
-//   isNil,
-//   mapObjIndexed,
-//   path,
-//   propOr,
-//   identity,
-// } from 'ramda/es'
-
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
   flags: {

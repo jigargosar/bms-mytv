@@ -409,12 +409,16 @@ viewGallery model =
         displayVideos =
             getDisplayVideosList model
 
-        displayVideosCount =
-            displayVideos |> List.length
-
         rowCellCount =
             thumbsPerRow model
 
+        --        displayVideosCount =
+        --            displayVideos |> List.length
+        --
+        --
+        --        remainder =
+        --            modBy rowCellCount displayVideosCount
+        --                |> Debug.log "rowCount"
         groupedVideos =
             displayVideos
                 |> List.Extra.greedyGroupsOf rowCellCount

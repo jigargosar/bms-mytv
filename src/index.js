@@ -15,38 +15,11 @@ import equals from 'ramda/es/equals'
 customElements.define(
   'lazy-image',
   class extends HTMLElement {
-    // static get observedAttributes() {
-    //   return ['src'];
-    // }
-    //
-    // attributeChangedCallback(name, oldValue, newValue) {
-    //   debugger
-    //   console.log(name, oldValue, newValue)
-    // }
-
-
-    _startObserving(){
-      this.io.observe(this)
-    }
-
-    _stopObserving(){
-      this.io.unobserve(this)
-    }
-
-    set src(src) {
-      if(equals(src, this.src)) return
-      this._startObserving()
-      this._src = src
-    }
-
-    get src() {
-      return this._src
-    }
-
+    _io = null
+    _src = null
     constructor() {
       super()
-
-      this.io = new IntersectionObserver((entries, observer) => {
+      this._io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.target === this) {
             this.firstChild.src = this.src
@@ -54,7 +27,15 @@ customElements.define(
           }
         })
       }, {})
+    }
+    set src(src) {
+      if (equals(src, this.src)) return
+      this._startObserving()
+      this._src = src
+    }
 
+    get src() {
+      return this._src
     }
 
     connectedCallback() {
@@ -64,6 +45,14 @@ customElements.define(
     disconnectedCallback() {
       this._stopObserving()
     }
+
+    _startObserving() {
+      this._io.observe(this)
+    }
+
+    _stopObserving() {
+      this._io.unobserve(this)
+    }
   },
 )
 
@@ -71,8 +60,9 @@ customElements.define(
 customElements.define(
   'load-more',
   class extends HTMLElement {
+    _io = null
     connectedCallback() {
-      this.io = new IntersectionObserver((entries, observer) => {
+      this._io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           console.debug(this.tagName, 'intersectionChanged', entry)
           this.dispatchEvent(
@@ -82,11 +72,11 @@ customElements.define(
           )
         })
       }, {})
-      this.io.observe(this)
+      this._io.observe(this)
     }
 
     disconnectedCallback() {
-      this.io.disconnect()
+      this._io.disconnect()
     }
   },
 )

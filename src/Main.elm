@@ -439,12 +439,7 @@ viewGallery model =
     div []
         [ div [ class "ph3 pv1 f3 lh-copy" ] [ text "MyTV" ]
         , viewRows model groupedVideos
-        , button
-            [ A.id "load-more-placeholder"
-            , css [ Css.visibility Css.hidden ]
-            , onClick More
-            ]
-            [ text "more" ]
+        , H.node "load-more" [] []
         ]
 
 

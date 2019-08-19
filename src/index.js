@@ -9,6 +9,37 @@ import path from "ramda/es/path"
 import propOr from "ramda/es/propOr"
 import identity from "ramda/es/identity"
 
+// CE
+customElements.define("load-more", class extends HTMLElement{
+  
+  connectedCallback(){
+    this.io = new IntersectionObserver(
+      function(entries, observer) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            // let lazyImage = entry.target;
+            // lazyImage.src = lazyImage.dataset.src;
+            // lazyImage.srcset = lazyImage.dataset.srcset;
+            // lazyImage.classList.remove("lazy");
+            // lazyImageObserver.unobserve(lazyImage);
+            console.log('entry', entry)
+            pubs.more('')
+          }
+        })
+      },
+      { rootMargin: '80%' },
+    )
+
+    this.io.observe(this)
+  }
+  disconnectedCallback(){
+    this.io.unobserve(this)
+  }
+})
+
+// INIT
+
+
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
   flags: {
@@ -144,32 +175,34 @@ function initPubs(pubs) {
   })(pubs)
 }
 
-setTimeout(() => {
-  const mb = document.getElementById('load-more-placeholder')
-
-  let lazyImageObserver = new IntersectionObserver(
-    function(entries, observer) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          // let lazyImage = entry.target;
-          // lazyImage.src = lazyImage.dataset.src;
-          // lazyImage.srcset = lazyImage.dataset.srcset;
-          // lazyImage.classList.remove("lazy");
-          // lazyImageObserver.unobserve(lazyImage);
-          console.log('entry', entry)
-          pubs.more('')
-        }
-      })
-    },
-    { rootMargin: '80%' },
-  )
-
-  lazyImageObserver.observe(mb)
-}, 100)
-
+// setTimeout(() => {
+//   const mb = document.getElementById('load-more-placeholder')
+//
+//   let lazyImageObserver = new IntersectionObserver(
+//     function(entries, observer) {
+//       entries.forEach(function(entry) {
+//         if (entry.isIntersecting) {
+//           // let lazyImage = entry.target;
+//           // lazyImage.src = lazyImage.dataset.src;
+//           // lazyImage.srcset = lazyImage.dataset.srcset;
+//           // lazyImage.classList.remove("lazy");
+//           // lazyImageObserver.unobserve(lazyImage);
+//           console.log('entry', entry)
+//           pubs.more('')
+//         }
+//       })
+//     },
+//     { rootMargin: '80%' },
+//   )
+//
+//   lazyImageObserver.observe(mb)
+// }, 100)
+//
 
 if (module.hot) {
   module.hot.accept(function () {
     location.reload();
   });
 }
+
+

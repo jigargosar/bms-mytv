@@ -605,12 +605,8 @@ viewImageCell model vid =
             , class "pa3"
             ]
             [ H.node "lazy-image"
-                []
-                [ img
-                    [ A.attribute "data-src" vid.imageUrl
-                    , height (thumbHeight model |> round)
-                    ]
-                    []
+                [ A.property "src" (JE.string vid.imageUrl) ]
+                [ img [ height (thumbHeight model |> round) ] []
                 ]
             ]
         , div

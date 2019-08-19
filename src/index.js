@@ -14,21 +14,50 @@ import identity from 'ramda/es/identity'
 customElements.define(
   'lazy-image',
   class extends HTMLElement {
-    connectedCallback() {
+
+    attributeChangedCallback(name, oldValue, newValue) {
+    debugger
+      console.log(name, oldValue, newValue)
+    }
+
+
+    _startObserving(){
+      this.io.observe(this)
+    }
+
+    _stopObserving(){
+      this.io.unobserve(this)
+    }
+
+    set src(src) {
+      this._startObserving()
+      this._src = src
+    }
+
+    get src() {
+      return this._src
+    }
+
+    constructor() {
+      super()
+
       this.io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            let lazyImage = entry.target.firstChild
-            lazyImage.src = lazyImage.dataset.src
-            // lazyImage.srcset = lazyImage.dataset.srcset
-            this.io.unobserve(lazyImage)
+          if (entry.isIntersecting && entry.target === this) {
+            this.firstChild.src = this._src
+            this._stopObserving()
           }
         })
       }, {})
-      this.io.observe(this)
+
     }
+
+    connectedCallback() {
+      this._startObserving()
+    }
+
     disconnectedCallback() {
-      this.io.disconnect()
+      this._stopObserving()
     }
   },
 )
@@ -50,6 +79,7 @@ customElements.define(
       }, {})
       this.io.observe(this)
     }
+
     disconnectedCallback() {
       this.io.disconnect()
     }

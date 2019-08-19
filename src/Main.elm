@@ -409,6 +409,9 @@ viewGallery model =
         displayVideos =
             getDisplayVideosList model
 
+        cells =
+            displayVideos |> List.map ImageCell
+
         rowCellCount =
             thumbsPerRow model
 
@@ -420,7 +423,7 @@ viewGallery model =
         --            modBy rowCellCount displayVideosCount
         --                |> Debug.log "rowCount"
         groupedVideos =
-            displayVideos
+            cells
                 |> List.Extra.greedyGroupsOf rowCellCount
     in
     div []
@@ -435,7 +438,7 @@ viewGallery model =
         ]
 
 
-viewRows : Model -> List (List Video) -> Html Msg
+viewRows : Model -> List (List Cell) -> Html Msg
 viewRows model groupedVideos =
     K.node "div"
         [ class "vs4 flex flex-column _items-center" ]
@@ -445,7 +448,7 @@ viewRows model groupedVideos =
         )
 
 
-viewRow : Model -> Int -> List Video -> List ( String, Html Msg )
+viewRow : Model -> Int -> List Cell -> List ( String, Html Msg )
 viewRow model rowIdx videos =
     let
         playingRow =
@@ -473,7 +476,7 @@ playingVideoInList model videos =
     model.playingVideo
         |> Maybe.andThen
             (\v ->
-                if List.member v videos then
+                if List.member (ImageCell v) videos then
                     Just v
 
                 else
@@ -536,6 +539,15 @@ viewFillerCell =
 
 
 viewCell model vid =
+    case vid of
+        ImageCell video ->
+            viewImageCell model video
+
+        LoadingCell ->
+            div [] []
+
+
+viewImageCell model vid =
     let
         isSel =
             model.playingVideo

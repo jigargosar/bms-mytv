@@ -129,9 +129,6 @@ function playVideo(video) {
     console.warn('Play Error domId Not Found', videoContainerID)
     return
   }
-  // debugger
-  // const width = videoContainer.getBoundingClientRect().width
-  // const height =
   videoContainer.innerHTML = `<video         
         class="azuremediaplayer amp-default-skin"/>`
   myPlayer = amp(
@@ -217,29 +214,6 @@ function initPubs(pubs) {
   })(pubs)
 }
 
-// setTimeout(() => {
-//   const mb = document.getElementById('load-more-placeholder')
-//
-//   let lazyImageObserver = new IntersectionObserver(
-//     function(entries, observer) {
-//       entries.forEach(function(entry) {
-//         if (entry.isIntersecting) {
-//           // let lazyImage = entry.target;
-//           // lazyImage.src = lazyImage.dataset.src;
-//           // lazyImage.srcset = lazyImage.dataset.srcset;
-//           // lazyImage.classList.remove("lazy");
-//           // lazyImageObserver.unobserve(lazyImage);
-//           console.log('entry', entry)
-//           pubs.more('')
-//         }
-//       })
-//     },
-//     { rootMargin: '80%' },
-//   )
-//
-//   lazyImageObserver.observe(mb)
-// }, 100)
-//
 
 if (module.hot) {
   module.hot.accept(function() {

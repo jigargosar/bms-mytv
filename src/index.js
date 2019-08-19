@@ -29,8 +29,8 @@ customElements.define(
       }, {})
     }
     set src(src) {
-      if (equals(src, this.src)) return
-      this._startObserving()
+      // if (equals(src, this.src)) return
+      // this._startObserving()
       this._src = src
     }
 

@@ -1,6 +1,7 @@
 module PagedLoader exposing
     ( Model
     , Msg(..)
+    , getLoadingVideoCount
     , init
     , update
     )
@@ -9,7 +10,6 @@ import ApiUrls
 import Http
 import Json.Decode as JD
 import Json.Encode exposing (Value)
-import Maybe.Extra
 import Task
 import UpdateExtra exposing (andThen, pure)
 import Video exposing (VideoList)
@@ -25,7 +25,7 @@ type alias LoadedRecord =
 
 
 type Model
-    = LoadingFirstPage
+    = LoadingFirstPage Bool
     | Loading LoadingRecord
     | LoadingThenFetchNext LoadingRecord
     | Loaded LoadedRecord
@@ -35,9 +35,25 @@ init : (HttpResult Value -> msg) -> ( Model, Cmd msg )
 init tagger =
     let
         model =
-            LoadingFirstPage
+            LoadingFirstPage False
     in
     ( model, fetchPageNum tagger 1 )
+
+
+getLoadingVideoCount : Model -> Int
+getLoadingVideoCount model =
+    case model of
+        LoadingFirstPage thenLoadNext ->
+            pageLimit
+
+        Loading _ ->
+            pageLimit
+
+        LoadingThenFetchNext _ ->
+            pageLimit
+
+        Loaded _ ->
+            0
 
 
 pageLimit =
@@ -67,8 +83,14 @@ update config message model =
 
         OnVideoResponse vr ->
             case model of
-                LoadingFirstPage ->
+                LoadingFirstPage thenLoadNext ->
                     updateFromVRIfPageNumEq config 1 vr model
+                        |> (if thenLoadNext then
+                                andThen (fetchNextPage config.onHttpResult)
+
+                            else
+                                identity
+                           )
 
                 Loading loading ->
                     updateFromVRIfPageNumEq config loading.pageNum vr model
@@ -84,7 +106,10 @@ update config message model =
 fetchNextPage : (HttpResult Value -> msg) -> Model -> ( Model, Cmd msg )
 fetchNextPage tagger model =
     case model of
-        LoadingFirstPage ->
+        LoadingFirstPage False ->
+            ( LoadingFirstPage True, Cmd.none )
+
+        LoadingFirstPage True ->
             ( model, Cmd.none )
 
         Loading pageNum ->

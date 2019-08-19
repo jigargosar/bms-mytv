@@ -164,7 +164,7 @@ setTimeout(() => {
     { rootMargin: '30%' },
   )
 
-  // lazyImageObserver.observe(mb)
+  lazyImageObserver.observe(mb)
 }, 100)
 
 

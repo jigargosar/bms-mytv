@@ -409,8 +409,15 @@ viewGallery model =
         displayVideos =
             getDisplayVideosList model
 
+        displayVideosCount =
+            displayVideos |> List.length
+
+        loadingVideoCount =
+            model.pagedLoader
+                |> PagedLoader.getLoadingVideoCount
+
         loadingCells =
-            List.repeat 3 LoadingCell
+            List.repeat loadingVideoCount LoadingCell
 
         cells =
             displayVideos
@@ -420,8 +427,6 @@ viewGallery model =
         rowCellCount =
             thumbsPerRow model
 
-        --        displayVideosCount =
-        --            displayVideos |> List.length
         --
         --
         --        remainder =

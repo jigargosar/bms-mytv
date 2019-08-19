@@ -15,8 +15,7 @@ import equals from 'ramda/es/equals'
 customElements.define(
   'lazy-image',
   class extends HTMLElement {
-    _io = null
-    _src = null
+
     constructor() {
       super()
       this._io = new IntersectionObserver((entries, observer) => {
@@ -27,10 +26,11 @@ customElements.define(
           }
         })
       }, {})
+      this.src = null
     }
     set src(src) {
-      // if (equals(src, this.src)) return
-      // this._startObserving()
+      if (equals(src, this.src)) return
+      this._startObserving()
       this._src = src
     }
 
@@ -60,7 +60,6 @@ customElements.define(
 customElements.define(
   'load-more',
   class extends HTMLElement {
-    _io = null
     connectedCallback() {
       this._io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {

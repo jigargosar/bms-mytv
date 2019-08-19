@@ -17,7 +17,7 @@ customElements.define(
       this.io = new IntersectionObserver(
         (entries, observer) => {
           entries.forEach(entry => {
-            console.log('intersectionChanged', entry)
+            console.debug(this.tagName,'intersectionChanged', entry)
             this.dispatchEvent(
               new CustomEvent('intersectionChanged', {
                 isIntersecting: entry.isIntersecting,

@@ -8,7 +8,7 @@
     "build": "parcel build src/index.html --out-dir public",
     "build_": "parcel build src/index.html --experimental-scope-hoisting",
     "deploy": "firebase deploy --only hosting:bms-mytv",
-    "bnd": ""
+    "bnd": "npx shx rm -fr public && npm run build && npm run deploy"
   },
   "private": true,
   "keywords": [],

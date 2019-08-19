@@ -575,28 +575,15 @@ viewImageCell model vid =
                 |> Maybe.Extra.unwrap False (eq_ vid)
     in
     div
-        [ class "flex-grow-1 flex-shrink-1 relative"
-        , style "box-shadow"
+        [ style "box-shadow"
             (if isSel then
                 "inset 0 0 1px 1px white"
 
              else
                 "none"
             )
-        , css
-            [ flexBasis (px 0)
-            , Css.batch
-                (if isSel then
-                    []
-
-                 else
-                    []
-                )
-
-            --            , maxWidth <| px 250
-            ]
-
-        --                , class "flex flex-column"
+        , class "flex-grow-1 flex-shrink-1 relative"
+        , css [ flexBasis (px 0) ]
         , onClick <| Play vid
         ]
         [ div

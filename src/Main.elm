@@ -1,12 +1,13 @@
 module Main exposing (main)
 
+--import FontAwesome.Styles
+
 import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Navigation as Nav
 import Css exposing (flexBasis, none, pointerEvents, px)
 import Css.Functional exposing (..)
 import Errors exposing (Errors)
-import FontAwesome.Styles
 import HasErrors
 import Html.Parser
 import Html.Parser.Util
@@ -314,12 +315,13 @@ view : Model -> Browser.Document Msg
 view model =
     viewRoute model.route model
         |> toUnStyledDocument
-        |> prependFontAwesomeCss
 
 
-prependFontAwesomeCss : Browser.Document Msg -> Browser.Document Msg
-prependFontAwesomeCss doc =
-    { doc | body = FontAwesome.Styles.css :: doc.body }
+
+--        |> prependFontAwesomeCss
+--prependFontAwesomeCss : Browser.Document Msg -> Browser.Document Msg
+--prependFontAwesomeCss doc =
+--    { doc | body = FontAwesome.Styles.css :: doc.body }
 
 
 type alias StyledDocument msg =

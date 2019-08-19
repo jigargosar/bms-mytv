@@ -1,6 +1,7 @@
 import 'tachyons'
 import './index.css'
 import { Elm } from './Main.elm'
+
 import forEachObjIndexed from "ramda/es/forEachObjIndexed"
 import isNil from "ramda/es/isNil"
 import mapObjIndexed from "ramda/es/mapObjIndexed"
@@ -8,6 +9,14 @@ import path from "ramda/es/path"
 import propOr from "ramda/es/propOr"
 import identity from "ramda/es/identity"
 
+// import {
+//   forEachObjIndexed,
+//   isNil,
+//   mapObjIndexed,
+//   path,
+//   propOr,
+//   identity,
+// } from 'ramda/es'
 
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
@@ -17,7 +26,7 @@ const app = Elm.Main.init({
   },
 })
 
-const pubs = initPubs({more:identity})
+const pubs = initPubs({ more: identity })
 
 initSubs({
   localStorageSetJsonItem: ([k, v]) => {
@@ -36,7 +45,7 @@ initSubs({
   play: video => {
     requestAnimationFrame(() => playVideo(video))
   },
-  disposePlayer
+  disposePlayer,
 })
 
 let myPlayer = null
@@ -59,8 +68,7 @@ function playVideo(video) {
   // debugger
   // const width = videoContainer.getBoundingClientRect().width
   // const height =
-  videoContainer.innerHTML =
-    `<video         
+  videoContainer.innerHTML = `<video         
         class="azuremediaplayer amp-default-skin"/>`
   myPlayer = amp(
     videoContainer.firstChild,
@@ -79,7 +87,7 @@ function playVideo(video) {
       // width: '345',
       // width: '100%',
       // height: '400',
-      fluid:true, 
+      fluid: true,
       poster: video.imageUrl,
       logo: { enabled: false },
     },
@@ -92,7 +100,7 @@ function playVideo(video) {
       })
     },
   )
-  
+
   myPlayer.src(
     [
       {
@@ -138,31 +146,32 @@ function initPubs(pubs) {
         return
       }
       if (send) {
-        console.log("sending", arg)
+        console.log('sending', arg)
         send(arg)
       }
     }
   })(pubs)
 }
 
-setTimeout(()=> {
+setTimeout(() => {
   const mb = document.getElementById('more-btn')
 
-  let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        // let lazyImage = entry.target;
-        // lazyImage.src = lazyImage.dataset.src;
-        // lazyImage.srcset = lazyImage.dataset.srcset;
-        // lazyImage.classList.remove("lazy");
-        // lazyImageObserver.unobserve(lazyImage);
-        console.log('entry',entry)
-        pubs.more("")
-      }
-    });
-  },{rootMargin:"30%"});
+  let lazyImageObserver = new IntersectionObserver(
+    function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          // let lazyImage = entry.target;
+          // lazyImage.src = lazyImage.dataset.src;
+          // lazyImage.srcset = lazyImage.dataset.srcset;
+          // lazyImage.classList.remove("lazy");
+          // lazyImageObserver.unobserve(lazyImage);
+          console.log('entry', entry)
+          pubs.more('')
+        }
+      })
+    },
+    { rootMargin: '30%' },
+  )
 
   lazyImageObserver.observe(mb)
-
-
-},100)
+}, 100)

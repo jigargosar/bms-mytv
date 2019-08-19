@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel src/index.html --open",
-    "build": "parcel build src/index.html",
-    "deploy": "firebase deploy --only hosting:bms-mytv"
+    "build": "parcel build src/index.html --out-dir public",
+    "build_": "parcel build src/index.html --experimental-scope-hoisting",
+    "deploy": "firebase deploy --only hosting:bms-mytv",
+    "bnd": ""
   },
   "private": true,
   "keywords": [],

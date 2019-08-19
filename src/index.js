@@ -1,14 +1,12 @@
 import 'tachyons'
 import './index.css'
 import { Elm } from './Main.elm'
-import {
-  forEachObjIndexed,
-  isNil,
-  mapObjIndexed,
-  path,
-  propOr,
-  identity
-} from 'ramda'
+import forEachObjIndexed from "ramda/es/forEachObjIndexed"
+import isNil from "ramda/es/isNil"
+import mapObjIndexed from "ramda/es/mapObjIndexed"
+import path from "ramda/es/path"
+import propOr from "ramda/es/propOr"
+import identity from "ramda/es/identity"
 
 
 const storageKey = 'elm-bms-movie-trailers-cache'

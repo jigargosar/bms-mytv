@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "parcel src/index.html --open"
+    "start": "parcel src/index.html --open",
+    "build": "parcel build src/index.html",
+    "deploy": "firebase deploy --only hosting:bms-mytv"
   },
   "private": true,
   "keywords": [],

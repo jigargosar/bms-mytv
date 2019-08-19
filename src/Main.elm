@@ -587,7 +587,7 @@ viewImageCell model vid =
         , onClick <| Play vid
         ]
         [ H.node "lazy-image"
-            [ class "flex bg-pink"
+            [ class "db flex bg-pink"
             , src vid.imageUrl
             ]
             [ img

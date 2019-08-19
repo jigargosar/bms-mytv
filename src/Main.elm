@@ -497,7 +497,7 @@ computeVideoPlayerHeight model =
     let
         vidWidth =
             toFloat model.size.width
-                * 60
+                * 70
                 / 100
 
         --                |> Debug.log "vidWidth"
@@ -524,11 +524,11 @@ viewPlayingRow model video =
                 , css [ pointerEvents none ]
                 ]
                 []
-            , div [ class "w-60 _bg-black-30" ]
+            , div [ class "w-70 _bg-black-30" ]
                 [ div [ A.id <| videoContainerDomId video.id ] []
                 ]
             , div
-                [ class "w-40 pa3 pb0 flex flex-column"
+                [ class "w-30 pa3 pb0 flex flex-column"
                 , css [ Css.height <| px (vidHeight - 6) ]
                 ]
                 [ div [ class "f4 lh-title" ] [ text video.title ]
@@ -602,17 +602,16 @@ viewImageCell model vid =
         [ div
             [ css []
             , class "flex items-center justify-center"
-
-            --                    , class "pa1"
+            , class "pa3"
             ]
-            [ img
-                [ src vid.imageUrl
-                , css []
-
-                --                , class "w-100"
-                , height (thumbHeight model |> round)
-                ]
+            [ H.node "lazy-image"
                 []
+                [ img
+                    [ A.attribute "data-src" vid.imageUrl
+                    , height (thumbHeight model |> round)
+                    ]
+                    []
+                ]
             ]
         , div
             [ class "pa2 f6 lh-title "

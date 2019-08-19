@@ -9,24 +9,45 @@ import path from 'ramda/es/path'
 import propOr from 'ramda/es/propOr'
 import identity from 'ramda/es/identity'
 
-// CE
+// CE LAZY IMAGE
+
+customElements.define(
+  'lazy-image',
+  class extends HTMLElement {
+    connectedCallback() {
+      this.io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            let lazyImage = entry.target.firstChild
+            lazyImage.src = lazyImage.dataset.src
+            // lazyImage.srcset = lazyImage.dataset.srcset
+            this.io.unobserve(lazyImage)
+          }
+        })
+      }, {})
+      this.io.observe(this)
+    }
+    disconnectedCallback() {
+      this.io.disconnect()
+    }
+  },
+)
+
+// CE LOAD-MORE
 customElements.define(
   'load-more',
   class extends HTMLElement {
     connectedCallback() {
-      this.io = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach(entry => {
-            console.debug(this.tagName,'intersectionChanged', entry)
-            this.dispatchEvent(
-              new CustomEvent('intersectionChanged', {
-                isIntersecting: entry.isIntersecting,
-              }),
-            )
-          })
-        },
-        { rootMargin: '80%' },
-      )
+      this.io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          console.debug(this.tagName, 'intersectionChanged', entry)
+          this.dispatchEvent(
+            new CustomEvent('intersectionChanged', {
+              isIntersecting: entry.isIntersecting,
+            }),
+          )
+        })
+      }, {})
       this.io.observe(this)
     }
     disconnectedCallback() {

@@ -398,15 +398,26 @@ thumbHeight model =
     1 / thumbAspectRatio * cellWidth
 
 
+type Cell
+    = ImageCell Video
+    | LoadingCell
+
+
 viewGallery : Model -> Html Msg
 viewGallery model =
     let
         displayVideos =
             getDisplayVideosList model
 
+        displayVideosCount =
+            displayVideos |> List.length
+
+        rowCellCount =
+            thumbsPerRow model
+
         groupedVideos =
             displayVideos
-                |> List.Extra.greedyGroupsOf (thumbsPerRow model)
+                |> List.Extra.greedyGroupsOf rowCellCount
     in
     div []
         [ div [ class "ph3 pv1 f3 lh-copy" ] [ text "MyTV" ]

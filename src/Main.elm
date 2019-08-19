@@ -13,7 +13,7 @@ import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, button, div, img, text, video)
 import Html.Styled.Attributes as A exposing (class, css, height, href, src, style)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Events exposing (on, onClick)
 import Html.Styled.Keyed as K
 import Http
 import Json.Decode as JD exposing (Decoder)
@@ -439,7 +439,7 @@ viewGallery model =
     div []
         [ div [ class "ph3 pv1 f3 lh-copy" ] [ text "MyTV" ]
         , viewRows model groupedVideos
-        , H.node "load-more" [] []
+        , H.node "load-more" [ on "intersectionChanged" (JD.succeed More) ] []
         ]
 
 

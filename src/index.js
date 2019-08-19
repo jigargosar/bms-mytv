@@ -2,43 +2,40 @@ import 'tachyons'
 import './index.css'
 import { Elm } from './Main.elm'
 
-import forEachObjIndexed from "ramda/es/forEachObjIndexed"
-import isNil from "ramda/es/isNil"
-import mapObjIndexed from "ramda/es/mapObjIndexed"
-import path from "ramda/es/path"
-import propOr from "ramda/es/propOr"
-import identity from "ramda/es/identity"
+import forEachObjIndexed from 'ramda/es/forEachObjIndexed'
+import isNil from 'ramda/es/isNil'
+import mapObjIndexed from 'ramda/es/mapObjIndexed'
+import path from 'ramda/es/path'
+import propOr from 'ramda/es/propOr'
+import identity from 'ramda/es/identity'
 
 // CE
-customElements.define("load-more", class extends HTMLElement{
-  
-  connectedCallback(){
-    this.io = new IntersectionObserver(
-      function(entries, observer) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            // let lazyImage = entry.target;
-            // lazyImage.src = lazyImage.dataset.src;
-            // lazyImage.srcset = lazyImage.dataset.srcset;
-            // lazyImage.classList.remove("lazy");
-            // lazyImageObserver.unobserve(lazyImage);
-            console.log('entry', entry)
-            pubs.more('')
-          }
-        })
-      },
-      { rootMargin: '80%' },
-    )
-
-    this.io.observe(this)
-  }
-  disconnectedCallback(){
-    this.io.unobserve(this)
-  }
-})
+customElements.define(
+  'load-more',
+  class extends HTMLElement {
+    connectedCallback() {
+      this.io = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach(entry => {
+            console.log('intersectionChanged', entry)
+            this.dispatchEvent(
+              new CustomEvent('intersectionChanged', {
+                isIntersecting: entry.isIntersecting,
+              }),
+            )
+          })
+        },
+        { rootMargin: '80%' },
+      )
+      this.io.observe(this)
+    }
+    disconnectedCallback() {
+      this.io.disconnect()
+    }
+  },
+)
 
 // INIT
-
 
 const storageKey = 'elm-bms-movie-trailers-cache'
 const app = Elm.Main.init({
@@ -48,7 +45,7 @@ const app = Elm.Main.init({
   },
 })
 
-const pubs = initPubs({ more: identity })
+const pubs = initPubs({})
 
 initSubs({
   localStorageSetJsonItem: ([k, v]) => {
@@ -200,9 +197,7 @@ function initPubs(pubs) {
 //
 
 if (module.hot) {
-  module.hot.accept(function () {
-    location.reload();
-  });
+  module.hot.accept(function() {
+    location.reload()
+  })
 }
-
-

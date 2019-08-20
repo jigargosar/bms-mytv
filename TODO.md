@@ -9,7 +9,7 @@
 - Retry on Http & Image loading errors, i.e. on network issues.
 - Clean up UI
   - [x] header
-  - video close btn
+  - [x] video close btn
   - video summary pane
 - Setup CI
 

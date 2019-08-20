@@ -379,7 +379,7 @@ getDisplayVideosList model =
 
 thumbsPerRow : Model -> Int
 thumbsPerRow model =
-    model.size.width // 250
+    max (model.size.width // 175) 1
 
 
 thumbAspectRatio : Float

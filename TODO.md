@@ -3,8 +3,18 @@
 [x] publish on github
 [x] deploy on firebase
 [x] show request inflight placeholders
+[x] * lazy load images
 * Clean up UI
-* lazy load images
+    [x] header
+    * video close btn
+    * video summary pane
+                    
 * Setup CI
 * defer loading media player. it's delaying time to render.
 
+# Skipping:
+
+* Figure out how UI should look, on mobile/small screen.
+    * it will take more time.
+    * and mock video didn't include it.
+    * But on small screen we should replace image thumb with video itself.

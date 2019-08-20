@@ -114,12 +114,12 @@ customElements.define(
         )
       ) {
         this._amp.src(
-          [
+          
             {
               src: src,
               type: 'application/vnd.ms-sstr+xml',
             },
-          ],
+
           [
             {
               kind: 'captions',

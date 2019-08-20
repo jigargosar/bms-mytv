@@ -5,8 +5,9 @@ module Main exposing (main)
 import BasicsExtra exposing (callWith, eq_)
 import Browser
 import Browser.Navigation as Nav
-import Css exposing (flexBasis, none, pointerEvents, px)
+import Css exposing (flexBasis, hover, int, none, num, opacity, pct, pointerEvents, px, right, scale, top, transforms, zIndex)
 import Css.Functional exposing (..)
+import Css.Transitions exposing (transition)
 import Errors exposing (Errors)
 import HasErrors
 import Html.Parser
@@ -27,6 +28,8 @@ import Result.Extra
 import Return
 import Route exposing (Route)
 import Size exposing (Size)
+import Svg.Styled exposing (path, svg)
+import Svg.Styled.Attributes as SA exposing (d, fill)
 import UpdateExtra exposing (andThen, command, effect, pure)
 import Url exposing (Url)
 import Video exposing (Video, VideoDict, VideoList)
@@ -507,21 +510,47 @@ viewPlayingRow model video =
                 ]
             , div
                 [ class "w-30 pa3 pb0 flex flex-column"
-                , css [ Css.height <| px (vidHeight - 6) ]
+                , css
+                    [ Css.height <| px (vidHeight - 6)
+                    , zIndex <| int 0
+                    ]
                 ]
                 [ div [ class "f4 lh-title" ] [ text video.title ]
-                , button [ onClick Close ] [ text "close" ]
                 , div [ class "flex" ] [ text video.subCategory ]
                 , div [ class "f7 overflow-hidden lh-copy " ]
                     [ div [] (viewSynopsis video.synopsis)
                     ]
                 ]
-            , div [ class "absolute" ]
-                [ button [ onClick Close ] [ text "close" ]
+            , div
+                [ class "absolute ba br-pill b--transparent"
+                , class "bg-white-50 pointer"
+                , class "flex items-center justify-center"
+                , css
+                    [ hover [ opacity (num 1), zIndex <| int 999 ]
+                    , top <| px 0
+                    , right <| px 2
+                    , opacity <| num 0.3
+                    , Css.width <| px 36
+                    , Css.height <| px 36
+                    , transition
+                        [ Css.Transitions.opacity 150
+                        , Css.Transitions.zIndex 150
+                        ]
+                    ]
+                , onClick Close
+                ]
+                [ closeSvg
                 ]
             ]
       )
     ]
+
+
+closeSvg =
+    svg [ SA.width "24", SA.height "24", SA.viewBox "0 0 24 24", SA.transform "" ]
+        [ path [ fill "none", d "M0 0h24v24H0V0z" ] []
+        , path [ fill "black", d "M18.3 5.71c-.39-.39-1.02-.39-1.41 0L12 10.59 7.11 5.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z" ] []
+        ]
 
 
 viewFillerCell =

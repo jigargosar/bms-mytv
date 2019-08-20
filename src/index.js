@@ -10,88 +10,17 @@ import propOr from 'ramda/es/propOr'
 import identity from 'ramda/es/identity'
 import equals from 'ramda/es/equals'
 import { defineAmpCE } from './CustomComponents/AmpCE'
+import { defineLazyImage } from './CustomComponents/LazyImage'
+import { defineLoadMore } from './CustomComponents/LoadMore'
 
-if (module.hot) {
-  module.hot.accept(function() {
-    location.reload()
-  })
-}
 
-// CE LAZY IMAGE
-
-customElements.define(
-  'lazy-image',
-  class extends HTMLElement {
-    constructor() {
-      super()
-      this._io = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && entry.target === this) {
-            this.firstChild.src = this.src
-            this._stopObserving()
-          }
-        })
-      }, {})
-      this.src = null
-    }
-
-    set src(src) {
-      if (equals(src, this.src)) return
-      this._startObserving()
-      this._src = src
-    }
-
-    get src() {
-      return this._src
-    }
-
-    connectedCallback() {
-      this._startObserving()
-    }
-
-    disconnectedCallback() {
-      this._stopObserving()
-    }
-
-    _startObserving() {
-      this._io.observe(this)
-    }
-
-    _stopObserving() {
-      this._io.unobserve(this)
-    }
-  },
-)
-
-// CE LOAD-MORE
-customElements.define(
-  'load-more',
-  class extends HTMLElement {
-    connectedCallback() {
-      this._io = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          console.debug(this.tagName, 'intersectionChanged', entry)
-          this.dispatchEvent(
-            new CustomEvent('intersectionChanged', {
-              isIntersecting: entry.isIntersecting,
-            }),
-          )
-        })
-      }, {})
-      this._io.observe(this)
-    }
-
-    disconnectedCallback() {
-      this._io.unobserve(this)
-    }
-  },
-)
-
+defineLazyImage()
+defineLoadMore()
 
 // INIT AmpCE
 window.ampLoaded = () => {
   setTimeout(() => {
-    console.debug("amp script loaded: defining AmpCE")
+    console.debug('amp script loaded: defining AmpCE')
     defineAmpCE()
   }, 3000)
 }
@@ -150,4 +79,13 @@ function initPubs(pubs) {
       }
     }
   })(pubs)
+}
+
+
+
+
+if (module.hot) {
+  module.hot.dispose(function() {
+    location.reload()
+  })
 }

@@ -212,6 +212,7 @@ update message model =
 
                 Browser.External href ->
                     ( model, Nav.load href )
+                        |> Debug.log "aaaa"
 
         UrlChanged url ->
             let

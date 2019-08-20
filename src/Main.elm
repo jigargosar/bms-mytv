@@ -308,13 +308,6 @@ view model =
         |> toUnStyledDocument
 
 
-
---        |> prependFontAwesomeCss
---prependFontAwesomeCss : Browser.Document Msg -> Browser.Document Msg
---prependFontAwesomeCss doc =
---    { doc | body = FontAwesome.Styles.css :: doc.body }
-
-
 type alias StyledDocument msg =
     { title : String, body : List (Html msg) }
 

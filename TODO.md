@@ -11,6 +11,7 @@
                     
 * Setup CI
 * defer loading media player. it's delaying time to render.
+* Retry on Http & Image loading errors, i.e. on network issues.
 
 # Skipping:
 

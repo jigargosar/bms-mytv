@@ -22,7 +22,7 @@ import Json.Encode as JE exposing (Value)
 import List.Extra
 import Maybe.Extra
 import PagedLoader
-import Ports exposing (FirestoreQueryResponse)
+import Ports
 import Result.Extra
 import Return
 import Route exposing (Route)
@@ -188,7 +188,6 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ Size.onBrowserResize OnResize
-        , Ports.more <| always More
         ]
 
 

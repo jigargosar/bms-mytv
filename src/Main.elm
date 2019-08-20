@@ -409,9 +409,6 @@ viewGallery model =
         displayVideos =
             getDisplayVideosList model
 
-        displayVideosCount =
-            displayVideos |> List.length
-
         loadingVideoCount =
             model.pagedLoader
                 |> PagedLoader.getLoadingVideoCount

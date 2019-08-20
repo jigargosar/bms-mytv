@@ -10,7 +10,7 @@
     * video summary pane
                     
 * Setup CI
-* defer loading media player. it's delaying time to render.
+* defer loading media player. it's delaying initial time to render.
 * Retry on Http & Image loading errors, i.e. on network issues.
 * Replace pink placeholders with pretty animating ones.
 * change thumbs to card layout, where title is party superimposed on 

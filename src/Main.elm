@@ -583,7 +583,7 @@ viewImageCell model vid =
 
 {-| Prevent XSS since synopsis contains HTML
 
-  - Why does elm does this?
+  - Why does elm disallow directly setting HTML from string?
     A: Excellent explanation from Creator of Elm
     <https://github.com/elm/html/issues/172#issuecomment-417891199>
 

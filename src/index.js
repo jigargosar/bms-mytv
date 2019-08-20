@@ -87,6 +87,8 @@ customElements.define(
   },
 )
 
+
+// INIT AmpCE
 window.ampLoaded = () => {
   setTimeout(() => {
     console.debug("amp script loaded: defining AmpCE")
@@ -107,12 +109,6 @@ const app = Elm.Main.init({
 const pubs = initPubs({})
 
 initSubs({
-  localStorageSetJsonItem: ([k, v]) => {
-    console.groupCollapsed('localStorageSetJsonItem', k)
-    console.log(v)
-    console.groupEnd()
-    localStorage.setItem(k, JSON.stringify(v))
-  },
   setCache: cache => {
     if (isNil(cache)) {
       localStorage.removeItem(storageKey)

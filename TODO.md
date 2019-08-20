@@ -12,6 +12,12 @@
 * Setup CI
 * defer loading media player. it's delaying time to render.
 * Retry on Http & Image loading errors, i.e. on network issues.
+* Replace pink placeholders with pretty animating ones.
+* change thumbs to card layout, where title is party superimposed on 
+    thumb itself, by positioning it at bottom of title container.
+    This will allow us to have fixed height per row.
+    i.e. image height + 50px. if title is longer than 50px height,
+    it will overlap thumb bottom. 
 
 # Skipping:
 

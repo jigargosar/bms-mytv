@@ -3,6 +3,11 @@
 import prop from 'ramda/es/prop'
 import path from 'ramda/es/path'
 
+let AUTO_PLAY = true
+if (process.env.NODE_ENV !== 'production') {
+  AUTO_PLAY = false
+}
+
 function updateSrc(src, player) {
   const options = player.options()
   const getFirstSrc = path(['sourceList', 0, 'src'])
@@ -59,7 +64,10 @@ export function defineAmpCE() {
 
       disconnectedCallback() {
         requestAnimationFrame(() => {
-          if (this._player && !this._player.playerContainer().isConnected) {
+          if (
+            this._player &&
+            !this._player.playerContainer().isConnected
+          ) {
             this._player.dispose()
             this._player = null
           }
@@ -80,7 +88,7 @@ function createPlayer(videoEl, poster) {
       'html5',
     ],
     nativeControlsForTouch: false,
-    autoplay: true,
+    autoplay: AUTO_PLAY,
     controls: true,
     // width: '345',
     // width: '100%',

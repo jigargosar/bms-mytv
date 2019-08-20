@@ -516,6 +516,9 @@ viewPlayingRow model video =
                     [ div [] (viewSynopsis video.synopsis)
                     ]
                 ]
+            , div [ class "absolute" ]
+                [ button [ onClick Close ] [ text "close" ]
+                ]
             ]
       )
     ]

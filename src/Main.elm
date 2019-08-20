@@ -436,7 +436,7 @@ viewRow : Model -> Int -> List Cell -> List ( String, Html Msg )
 viewRow model rowIdx videos =
     let
         playingRow =
-            playingVideoInList model videos
+            findPlayingVideoInList model videos
                 |> Maybe.Extra.unwrap [] (viewPlayingRow model)
 
         videoCount =
@@ -456,7 +456,7 @@ viewRow model rowIdx videos =
            ]
 
 
-playingVideoInList model videos =
+findPlayingVideoInList model videos =
     model.playingVideo
         |> Maybe.andThen
             (\v ->

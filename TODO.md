@@ -6,15 +6,16 @@
 - [x] \* lazy load images
 - [x] defer loading media player. it's delaying initial time to render.
 
+- scroll video player into view, on play.
 - Retry on Http & Image loading errors, i.e. on network issues.
 - Clean up UI
   - [x] header
   - [x] video close btn
   - video summary pane
-- Setup CI
 
 # Nice To Have: But Skipping for now :(
 
+- Setup CI
 - Replace pink placeholders with pretty animating ones.
 - change thumbs to card layout, where title is party superimposed on thumb
   itself, by positioning it at bottom of title container. This will allow

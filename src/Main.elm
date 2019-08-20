@@ -332,13 +332,11 @@ viewRoute route model =
 
 viewHome : Model -> StyledDocument Msg
 viewHome model =
-    { title = "Movie Trailers"
+    { title = "BMS MyTV"
     , body =
         [ HasErrors.detailView model
         , viewGallery model
         , viewFooter model
-
-        --        , div [ class "pre code" ] [ text model.dataStr ]
         ]
     }
 

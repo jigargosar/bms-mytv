@@ -14,6 +14,7 @@ import { defineLazyImage } from './CustomComponents/LazyImage'
 import { defineLoadMore } from './CustomComponents/LoadMore'
 
 
+// INIT CustomElements
 defineLazyImage()
 defineLoadMore()
 
@@ -79,13 +80,4 @@ function initPubs(pubs) {
       }
     }
   })(pubs)
-}
-
-
-
-
-if (module.hot) {
-  module.hot.dispose(function() {
-    location.reload()
-  })
 }

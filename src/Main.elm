@@ -12,7 +12,7 @@ import HasErrors
 import Html.Parser
 import Html.Parser.Util
 import Html.Styled as H exposing (Html, button, div, img, text, video)
-import Html.Styled.Attributes as A exposing (class, css, height, href, poster, src, style)
+import Html.Styled.Attributes exposing (class, css, height, href, poster, src, style)
 import Html.Styled.Events exposing (on, onClick)
 import Html.Styled.Keyed as K
 import Http
@@ -230,18 +230,10 @@ update message model =
                 |> callWith model
 
         Play video ->
-            ( { model | playingVideo = Just video }
-            , Cmd.batch
-                [ Ports.play video
-                ]
-            )
+            pure { model | playingVideo = Just video }
 
         Close ->
-            ( { model | playingVideo = Nothing }
-            , Cmd.batch
-                [ Ports.disposePlayer ()
-                ]
-            )
+            pure { model | playingVideo = Nothing }
 
         More ->
             fetchNextPage model
@@ -484,10 +476,6 @@ playingVideoInList model videos =
                 else
                     Nothing
             )
-
-
-videoContainerDomId videoId =
-    videoId
 
 
 computeVideoPlayerHeight model =

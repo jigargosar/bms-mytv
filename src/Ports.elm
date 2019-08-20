@@ -1,16 +1,9 @@
 port module Ports exposing (..)
 
 import Json.Encode exposing (Value)
-import Video exposing (Video)
-
-
-port play : Video -> Cmd msg
 
 
 port more : (Value -> msg) -> Sub msg
-
-
-port disposePlayer : () -> Cmd msg
 
 
 port localStorageSetStringItem : ( String, String ) -> Cmd msg

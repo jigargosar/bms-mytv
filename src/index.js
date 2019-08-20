@@ -9,6 +9,7 @@ import path from 'ramda/es/path'
 import propOr from 'ramda/es/propOr'
 import identity from 'ramda/es/identity'
 import equals from 'ramda/es/equals'
+import { defineAmpCE } from './CustomComponents/AmpCE'
 
 if (module.hot) {
   module.hot.accept(function() {
@@ -33,6 +34,7 @@ customElements.define(
       }, {})
       this.src = null
     }
+
     set src(src) {
       if (equals(src, this.src)) return
       this._startObserving()
@@ -85,119 +87,12 @@ customElements.define(
   },
 )
 
-// CE azure-media-player
-
-function defineAmpCE() {
-  customElements.define(
-    'azure-media-player',
-    class extends HTMLElement {
-      constructor() {
-        super()
-        console.log('amp ce created')
-      }
-
-      set poster(poster) {
-        this._poster = poster
-      }
-
-      get poster() {
-        return this._poster
-      }
-
-      set src(src) {
-        this._src = src
-        if (
-          this._src &&
-          this._amp &&
-          !(
-            this._amp.options().sourceList &&
-            this._amp.options().sourceList[0] &&
-            this._amp.options().sourceList[0].src === src
-          )
-        ) {
-          this._amp.src(
-            {
-              src: src,
-              type: 'application/vnd.ms-sstr+xml',
-            },
-
-            [
-              {
-                kind: 'captions',
-                src: '/subtitles.vtt',
-                srclang: 'en',
-                label: 'English',
-              },
-            ],
-          )
-        }
-      }
-
-      get src() {
-        return this._src
-      }
-
-      connectedCallback() {
-        if (this._amp) {
-          this.src = this._src
-          return
-        }
-        this.innerHTML = `<video         
-        class="azuremediaplayer amp-default-skin"/>`
-        this._amp = amp(
-          this.firstChild,
-          {
-            /* Options */
-            techOrder: [
-              'azureHtml5JS',
-              'flashSS',
-              'html5FairPlayHLS',
-              'silverlightSS',
-              'html5',
-            ],
-            nativeControlsForTouch: false,
-            autoplay: true,
-            controls: true,
-            // width: '345',
-            // width: '100%',
-            // height: '400',
-            fluid: true,
-            poster: this.poster,
-            logo: { enabled: false },
-          },
-          function() {
-            console.log('Good to go!')
-            // // setTimeout(() => myPlayer.dispose(), 1000)
-            // // add an event listener
-            this.addEventListener('ended', function() {
-              console.log('Finished!')
-            })
-          },
-        )
-        this.src = this._src
-      }
-
-      disconnectedCallback() {
-        requestAnimationFrame(() => {
-          if (this._amp && !this._amp.playerContainer().isConnected) {
-            this._amp.dispose()
-            this._amp = null
-          }
-        })
-      }
-    },
-  )
+window.ampLoaded = () => {
+  setTimeout(() => {
+    console.debug("amp script loaded: defining AmpCE")
+    defineAmpCE()
+  }, 3000)
 }
-
-import ('http://amp.azure.net/libs/amp/latest/azuremediaplayer.min.js')
-  .then((amp)=> {
-    debugger
-    return defineAmpCE()
-  })
-  .catch((e)=> console.error('failed to load video player',e))
-
-
-
 
 // INIT
 
@@ -225,79 +120,7 @@ initSubs({
       localStorage.setItem(storageKey, JSON.stringify(cache))
     }
   },
-  play: video => {
-    // requestAnimationFrame(() => playVideo(video))
-  },
-  disposePlayer,
 })
-
-let myPlayer = null
-
-function disposePlayer() {
-  if (myPlayer) {
-    myPlayer.dispose()
-    myPlayer = null
-  }
-}
-
-// function playVideo(video) {
-//   disposePlayer()
-//   let videoContainerID = video.id
-//   let videoContainer = document.getElementById(videoContainerID)
-//   if (!videoContainer) {
-//     console.warn('Play Error domId Not Found', videoContainerID)
-//     return
-//   }
-//   videoContainer.innerHTML = `<video
-//         class="azuremediaplayer amp-default-skin"/>`
-//   myPlayer = amp(
-//     videoContainer.firstChild,
-//     {
-//       /* Options */
-//       techOrder: [
-//         'azureHtml5JS',
-//         'flashSS',
-//         'html5FairPlayHLS',
-//         'silverlightSS',
-//         'html5',
-//       ],
-//       nativeControlsForTouch: false,
-//       autoplay: true,
-//       controls: true,
-//       // width: '345',
-//       // width: '100%',
-//       // height: '400',
-//       fluid: true,
-//       poster: video.imageUrl,
-//       logo: { enabled: false },
-//     },
-//     function() {
-//       console.log('Good to go!')
-//       // setTimeout(() => myPlayer.dispose(), 1000)
-//       // add an event listener
-//       this.addEventListener('ended', function() {
-//         console.log('Finished!')
-//       })
-//     },
-//   )
-//
-//   myPlayer.src(
-//     [
-//       {
-//         src: video.videoUrl,
-//         type: 'application/vnd.ms-sstr+xml',
-//       },
-//     ],
-//     [
-//       {
-//         kind: 'captions',
-//         src: '/subtitles.vtt',
-//         srclang: 'en',
-//         label: 'English',
-//       },
-//     ],
-//   )
-// }
 
 function initSubs(subs) {
   forEachObjIndexed((listener, portName) => {
